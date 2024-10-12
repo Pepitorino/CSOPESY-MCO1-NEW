@@ -4,6 +4,10 @@ ProcessConsole::ProcessConsole() : AConsole("PROCESS_CONSOLE") {
 
 }
 
-void ProcessConsole::onEnabled(std::shared_ptr<Process> process) {
+void ProcessConsole::onEnabled() {
+	return;
+}
 
+void ProcessConsole::onEnabled(std::shared_ptr<Process> process) {
+	this->process = process;
 }

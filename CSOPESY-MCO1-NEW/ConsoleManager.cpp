@@ -33,5 +33,5 @@ bool ConsoleManager::switchProcessConsole(String process) {
 }
 
 void ConsoleManager::tick() {
-	this->drawConsole();
+	this->currentConsole->process();
 }
