@@ -48,5 +48,7 @@ void MainConsole::drawConsole() {
     title();
     std::cout << "Input \'exit\' to leave the Main Console. Input \'clear\' to clear the Main Console" << std::endl;
 
+    //unholy shit to print old commands, function pointers
+
     std::cout << "\nEnter command: " << this->command;
 }
