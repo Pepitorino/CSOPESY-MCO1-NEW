@@ -22,11 +22,14 @@ void ConsoleManager::drawConsole()
 	this->currentConsole->drawConsole();
 }
 
-bool ConsoleManager::switchConsole(console newConsole) {
-	this->previousConsole = this->currentConsole;
-	for (auto x : this->consoleTable) {
-		if (x.first == newConsole) this->currentConsole = x.second;
-	}
+bool ConsoleManager::switchMainConsole() {
+	this->currentConsole = this->mainConsole;
+}
+
+bool ConsoleManager::switchProcessConsole(String process) {
+	std::shared_ptr<Process> ptrProcess = this->processTable.find(process)->second;
+	this->currentConsole = this->processConsole;
+	this->currentConsole->onEnabled(ptrProcess);
 }
 
 void ConsoleManager::tick() {

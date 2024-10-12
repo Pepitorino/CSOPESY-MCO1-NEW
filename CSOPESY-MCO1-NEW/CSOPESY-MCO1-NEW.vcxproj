@@ -25,6 +25,7 @@
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="MainConsole.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="ProcessConsole.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="TypeDefRepo.h" />
   </ItemGroup>
@@ -36,6 +37,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainConsole.cpp" />
     <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProcessConsole.cpp" />
     <ClCompile Include="Scheduler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

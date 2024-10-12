@@ -15,3 +15,7 @@ void MainConsole::title() {
 	std::cout << " By (S16):\n Ambrosio, Carlos Felipe \n Del Rosario, Lance Victor\n Magabo, Julianna Margaux\n";
 	std::cout << "============================================================================\n";
 }
+
+void drawConsole() {
+
+}
