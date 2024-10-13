@@ -13,6 +13,10 @@ void ConsoleManager::initialize()
 	sharedInstance = new ConsoleManager();
 }
 
+void ConsoleManager::initProgram() {
+
+}
+
 ConsoleManager::ConsoleManager()
 {
 	this->mainConsole = std::make_shared<MainConsole>();

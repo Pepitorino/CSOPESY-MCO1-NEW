@@ -18,6 +18,7 @@ public:
 	static void initialize();
 	static void destroy();
 	static ConsoleManager* getInstance();
+	static void initProgram(); //read config.txt
 
 	void tick();
 	void drawConsole();
