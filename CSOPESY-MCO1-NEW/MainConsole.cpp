@@ -91,16 +91,35 @@ void MainConsole::commands(String input) {
     }
 
     if (args[0] == "initialize") {
-        //check if already initialized
         if (!(consoleManagerInstance->checkInitialized())) {
             ConsoleManager::initProgram();
             this->toPrint.push_back("Initialized!");
+            return;
         }
+        else {
+            this->toPrint.push_back("Already initialized!");
+            return;
+        }
+    }
+    else if (args[0] == "clear") {
+        this->toPrint.clear();
+        return;
+    }
+    else if (args[0] == "exit") {
+        ConsoleManager::end();
+        return;
     }
     else if (args[0] == "help") {
         String help = "Here are the possible commands:\n\'initialize\' - Initializes the system\n\'screen\' - Displays the screen\n\'scheduler-test\' - Tests the scheduler\n\'scheduler-stop\' - Stops the scheduler\n\'report-util\' - Generates a report\n\'clear\' - Clears the screen\n\'exit\' - Exits the program";
         this->toPrint.push_back(help + '\n');
+        return;
     }
+
+    if (!consoleManagerInstance->checkInitialized()) {
+        this->toPrint.push_back("Not yet initialized!");
+        return;
+    }
+
     else if (args[0] == "scheduler-test") {
 
     }
@@ -110,17 +129,11 @@ void MainConsole::commands(String input) {
     else if (args[0] == "report-util") {
 
     }
-    else if (args[0] == "clear") {
-        this->toPrint.clear();
-    }
-    else if (args[0] == "exit") {
-        ConsoleManager::end();
-    }
     else if (args[0] == "screen") {
 
     }
     else {
-
+        this->toPrint.push_back("Command not recognized, please try again.");
     }
 
 }
