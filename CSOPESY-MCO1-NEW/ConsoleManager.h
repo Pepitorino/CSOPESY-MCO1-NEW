@@ -5,6 +5,7 @@
 #include "Process.h"
 #include "MainConsole.h"
 #include "ProcessConsole.h"
+//Singleton
 class ConsoleManager
 {
 public:

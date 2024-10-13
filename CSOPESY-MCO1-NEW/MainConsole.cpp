@@ -10,6 +10,7 @@ void MainConsole::title() {
 	std::cout << " \\ \\_____\\  \\/\\_____\\  \\ \\_____\\  \\ \\_\\    \\ \\_____\\  \\/\\_____\\  \\/\\_____\\ \n";
 	std::cout << "  \\/_____/   \\/_____/   \\/_____/   \\/_/     \\/_____/   \\/_____/   \\/_____/\n";
 	std::cout << " By (S16):\n Ambrosio, Carlos Felipe \n Del Rosario, Lance Victor\n Magabo, Julianna Margaux\n";
+    // leaving ju here as a remembrance
 	std::cout << "============================================================================\n";
 }
 
@@ -17,6 +18,7 @@ MainConsole::MainConsole() : AConsole("MAIN_CONSOLE") {
 
 }
 
+//uses a marquee console type beat now to render the screen
 void MainConsole::process() {
 	this->keyboardPolling();
 	this->drawConsole();
@@ -52,9 +54,16 @@ void MainConsole::drawConsole() {
     title();
     std::cout << "Input \'exit\' to leave the Main Console. Input \'clear\' to clear the Main Console" << std::endl;
 
+    // uses toPrint to print old things
+    // honestly if i knew how to use windows.h
+    // that would probably be more effective but 
+    // it doesnt work on my machine for whatever reason
+
     std::cout << "\nEnter command: " << this->command;
 }
 
+//TODO:handle commands
+//just add the commands + whatever was before to the "toPrint" variable
 void MainConsole::commands(String input) {
     std::vector<String> args;
     String delimiter = " ";

@@ -9,6 +9,9 @@ public:
 
 protected:
 	String getName();
+	//2 different on enableds, kind of inefficient but its whats needed
+	//having a separate function to switch to the processconsole still seems better than
+	//having a buncha extra consoles, seems like a waste of bytes
 	virtual void onEnabled() = 0; //called when the console is run the first time
 	virtual void onEnabled(std::shared_ptr<Process> process) = 0;
 	virtual void process() = 0; // any algo, computation
