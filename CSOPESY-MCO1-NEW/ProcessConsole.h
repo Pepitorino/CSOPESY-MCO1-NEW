@@ -12,7 +12,7 @@ public:
 	void keyboardPolling();
 	void process() override;
 	void drawConsole() override;
-	void commands();
+	void commands(String input);
 private:
 	std::shared_ptr<Process> displayedProcess;
 	String command;

@@ -40,6 +40,9 @@
     <ClCompile Include="ProcessConsole.cpp" />
     <ClCompile Include="Scheduler.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="config.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

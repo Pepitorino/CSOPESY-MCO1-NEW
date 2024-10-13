@@ -17,11 +17,14 @@ public:
 	};
 	static void initialize();
 	static void destroy();
+	static void end();
 	static ConsoleManager* getInstance();
 	static void initProgram(); //read config.txt
-
+	
+	bool checkInitialized();
 	void tick();
 	void drawConsole();
+	bool getRunning();
 
 	void switchMainConsole();
 	void switchProcessConsole(String process);
@@ -40,6 +43,7 @@ private:
 	std::unordered_map<String, std::shared_ptr<Process>> processTable;
 
 	//HANDLE consoleHandle;
+	bool initialized = false;
 	bool running = true;
 };
 

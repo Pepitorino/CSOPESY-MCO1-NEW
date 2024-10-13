@@ -24,7 +24,7 @@ void ProcessConsole::keyboardPolling() {
     }
 }
 
-void ProcessConsole::commands() {
+void ProcessConsole::commands(String input) {
 
 }
 

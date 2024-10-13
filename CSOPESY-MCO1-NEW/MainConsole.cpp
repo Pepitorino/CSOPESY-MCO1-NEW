@@ -1,6 +1,7 @@
 #include "MainConsole.h"
 #include "TypeDefRepo.h"
 #include <windows.h>
+#include "ConsoleManager.h"
 
 void MainConsole::title() {
 	std::cout << "============================================================================\n";
@@ -29,7 +30,7 @@ void MainConsole::keyboardPolling() {
         char key = _getch();
         if (key == 13) {
             String input = this->command;
-            this->toPrint.push_back("Enter command:" + this->command + '\n');
+            this->toPrint.push_back("\nEnter command:" + this->command + '\n');
             this->command = "";
             if (input != "") this->commands(input);
         }
@@ -58,13 +59,18 @@ void MainConsole::drawConsole() {
     // honestly if i knew how to use windows.h
     // that would probably be more effective but 
     // it doesnt work on my machine for whatever reason
+    for (String string : toPrint) {
+        std::cout << string;
+    }
 
-    std::cout << "\nEnter command: " << this->command;
+    std::cout << "\nEnter command:" << this->command;
+    Sleep(5);
 }
 
 //TODO:handle commands
 //just add the commands + whatever was before to the "toPrint" variable
 void MainConsole::commands(String input) {
+    ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
     std::vector<String> args;
     String delimiter = " ";
     size_t pos = 0;
@@ -85,10 +91,15 @@ void MainConsole::commands(String input) {
     }
 
     if (args[0] == "initialize") {
-
+        //check if already initialized
+        if (!(consoleManagerInstance->checkInitialized())) {
+            ConsoleManager::initProgram();
+            this->toPrint.push_back("Initialized!");
+        }
     }
     else if (args[0] == "help") {
-
+        String help = "Here are the possible commands:\n\'initialize\' - Initializes the system\n\'screen\' - Displays the screen\n\'scheduler-test\' - Tests the scheduler\n\'scheduler-stop\' - Stops the scheduler\n\'report-util\' - Generates a report\n\'clear\' - Clears the screen\n\'exit\' - Exits the program";
+        this->toPrint.push_back(help + '\n');
     }
     else if (args[0] == "scheduler-test") {
 
@@ -100,9 +111,12 @@ void MainConsole::commands(String input) {
 
     }
     else if (args[0] == "clear") {
-
+        this->toPrint.clear();
     }
     else if (args[0] == "exit") {
+        ConsoleManager::end();
+    }
+    else if (args[0] == "screen") {
 
     }
     else {

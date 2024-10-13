@@ -4,7 +4,14 @@
 class Scheduler
 {
 public:
+	enum SchedulingAlgo {
+		FCFS,
+		RR,
+		SJFP,
+		SJFNP
+	};
 	static void initialize();
+	static void initScheduler(int cores, SchedulingAlgo scheduler, uint32_t quantumCycles, uint32_t batchProcessFreq, uint32_t minIns, uint32_t maxIns, uint32_t delays);
 	static void destroy();
 	static Scheduler* getInstance();
 

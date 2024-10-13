@@ -10,9 +10,9 @@ int main() {
 	ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
 	std::cout << consoleManagerInstance;
 
-	while (running) {
+	while (consoleManagerInstance->getRunning()) {
 		consoleManagerInstance->tick();
-		//Scheduler->tick();
+		//schedulerInstance->tick();
 	}
 
 	consoleManagerInstance->destroy();
