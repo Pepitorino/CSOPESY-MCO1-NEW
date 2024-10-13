@@ -9,5 +9,13 @@ void ProcessConsole::onEnabled() {
 }
 
 void ProcessConsole::onEnabled(std::shared_ptr<Process> process) {
-	this->process = process;
+	this->displayedProcess = process;
+}
+
+void ProcessConsole::process() {
+
+}
+
+void ProcessConsole::drawConsole() {
+
 }

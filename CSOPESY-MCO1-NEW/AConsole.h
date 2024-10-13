@@ -1,5 +1,6 @@
 #pragma once
 #include "TypeDefRepo.h"
+#include "Process.h"
 class AConsole
 {
 public:

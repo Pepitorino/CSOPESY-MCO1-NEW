@@ -3,13 +3,15 @@
 #include <unordered_map>
 #include "AConsole.h"
 #include "Process.h"
+#include "MainConsole.h"
+#include "ProcessConsole.h"
 class ConsoleManager
 {
 public:
 	enum console {
-		processConsole,
-		mainConsole,
-		schedulingConsole,
+		PROCESS_CONSOLE,
+		MAIN_CONSOLE,
+		SCHEDULING_CONSOLE,
 
 	};
 	static void initialize();
@@ -19,8 +21,8 @@ public:
 	void tick();
 	void drawConsole();
 
-	bool switchMainConsole();
-	bool switchProcessConsole(String process);
+	void switchMainConsole();
+	void switchProcessConsole(String process);
 private:
 	ConsoleManager();
 	~ConsoleManager() = default;
@@ -28,8 +30,8 @@ private:
 	ConsoleManager& operator=(ConsoleManager const&) {}; //assignment operator is private
 	static ConsoleManager* sharedInstance;
 	
-	std::shared_ptr<AConsole> mainConsole;
-	std::shared_ptr<AConsole> processConsole;
+	std::shared_ptr<MainConsole> mainConsole;
+	std::shared_ptr<ProcessConsole> processConsole;
 	std::shared_ptr<AConsole> currentConsole;
 
 	// Considered adding a vector of Processes para matrack yung mga processes created so far (for use in creating Process ID)

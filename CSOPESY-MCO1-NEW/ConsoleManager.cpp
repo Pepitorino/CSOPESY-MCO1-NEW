@@ -9,7 +9,15 @@ ConsoleManager* ConsoleManager::getInstance()
 
 void ConsoleManager::initialize()
 {
+	std::cout << "Hello World"; //debugging
 	sharedInstance = new ConsoleManager();
+}
+
+ConsoleManager::ConsoleManager()
+{
+	this->mainConsole = std::make_shared<MainConsole>();
+	this->processConsole = std::make_shared<ProcessConsole>();
+	this->currentConsole = this->mainConsole;
 }
 
 void ConsoleManager::destroy()
@@ -22,11 +30,11 @@ void ConsoleManager::drawConsole()
 	this->currentConsole->drawConsole();
 }
 
-bool ConsoleManager::switchMainConsole() {
+void ConsoleManager::switchMainConsole() {
 	this->currentConsole = this->mainConsole;
 }
 
-bool ConsoleManager::switchProcessConsole(String process) {
+void ConsoleManager::switchProcessConsole(String process) {
 	std::shared_ptr<Process> ptrProcess = this->processTable.find(process)->second;
 	this->currentConsole = this->processConsole;
 	this->currentConsole->onEnabled(ptrProcess);

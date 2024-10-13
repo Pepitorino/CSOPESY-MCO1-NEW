@@ -12,7 +12,7 @@ public:
 	void process() override;
 	void drawConsole() override;
 private:
-	std::shared_ptr<Process> process;
+	std::shared_ptr<Process> displayedProcess;
 	bool refreshed = false;
 };
 
