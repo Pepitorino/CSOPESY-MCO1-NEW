@@ -1,7 +1,7 @@
 #pragma once
 #include "TypeDefRepo.h"
 #include "Process.h"
-class Scheduler
+class Scheduler 
 {
 public:
 	enum SchedulingAlgo {
@@ -19,6 +19,7 @@ public:
 	void addProcess(); //adds process to processqueue 
 	void finishProcess();
 private:
+
 	Scheduler(int cores);
 	~Scheduler() = default;
 	Scheduler(Scheduler const&) {}; //copy constructor is private
@@ -28,6 +29,9 @@ private:
 	//processqueue is a sharedptr now between scheduler and its scheduling type
 	bool initialized = false;
 	std::shared_ptr<std::vector<std::shared_ptr<Process>>> processQueue; //when process added to processList @ ConsoleManager, add it to processQueue
+	//to include CPUSerf vector
+
+	
 	//AScheduler scheduler;
 
 	//config settings

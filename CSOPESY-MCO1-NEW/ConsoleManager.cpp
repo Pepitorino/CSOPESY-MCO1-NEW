@@ -108,6 +108,31 @@ void ConsoleManager::switchMainConsole() {
 	this->currentConsole = this->mainConsole;
 }
 
+//Processes table related
+bool ConsoleManager::DoesProcessExist(String process) {
+	return (this->processTable.find(process) == processTable.end()) ? false : true; 
+}
+
+void ConsoleManager::addProcess(String process) {
+	std::shared_ptr<Process> ptrProcess = std::make_shared<Process>(process);
+	this->processTable.insert(std::make_pair(process, ptrProcess));
+
+	//add to vector
+	this->ProcessOrderVector.push_back(process); 
+}
+
+int ConsoleManager::countNumberProcesses() {
+	return this->processTable.size();
+}
+
+//return a string of vector processes for MainConsole to print regarding Process statuses
+std::vector<String> ConsoleManager::obtainProcessDetails() {
+	//iterate through processTable by sequence of ProcessOrderVector and return a vector of strings
+	//to obtain from each process: process name \t time of last command executed (MM/DD/YYYY) \t
+	//Last core run on Process (if finished, display Finished), \t current line of code (processProgress)/commandList.size()
+}
+
+//ProcessConsole related
 void ConsoleManager::switchProcessConsole(String process) {
 	std::shared_ptr<Process> ptrProcess = this->processTable.find(process)->second;
 	this->currentConsole = this->processConsole;
@@ -117,3 +142,5 @@ void ConsoleManager::switchProcessConsole(String process) {
 void ConsoleManager::tick() {
 	this->currentConsole->process();
 }
+
+//create dummy processes

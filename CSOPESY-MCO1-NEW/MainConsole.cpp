@@ -12,6 +12,7 @@ void MainConsole::title() {
 	std::cout << "  \\/_____/   \\/_____/   \\/_____/   \\/_/     \\/_____/   \\/_____/   \\/_____/\n";
 	std::cout << " By (S16):\n Ambrosio, Carlos Felipe \n Del Rosario, Lance Victor\n Magabo, Julianna Margaux\n";
     // leaving ju here as a remembrance
+    // LV [10/13/24]: <3 respectful and understanding decision from her
 	std::cout << "============================================================================\n";
 }
 
@@ -93,11 +94,11 @@ void MainConsole::commands(String input) {
     if (args[0] == "initialize") {
         if (!(consoleManagerInstance->checkInitialized())) {
             ConsoleManager::initProgram();
-            this->toPrint.push_back("Initialized!");
+            this->toPrint.push_back("Initialized!" + '\n');
             return;
         }
         else {
-            this->toPrint.push_back("Already initialized!");
+            this->toPrint.push_back("Already initialized!" + '\n');
             return;
         }
     }
@@ -116,26 +117,66 @@ void MainConsole::commands(String input) {
     }
 
     if (!consoleManagerInstance->checkInitialized()) {
-        this->toPrint.push_back("Not yet initialized!");
+        this->toPrint.push_back("Not yet initialized!" + '\n');
         return;
     }
 
-    else if (args[0] == "scheduler-test") {
+	else if (args[0] == "scheduler-test") {
+		//to be continued
+		this->toPrint.push_back(args[0] + " command recognized. Doing something." + '\n');
+
+        //to include yung printing out the list of processes
 
     }
     else if (args[0] == "scheduler-stop") {
-
+        //to be continued
+        this->toPrint.push_back(args[0] + " command recognized. Doing something." + '\n');
     }
     else if (args[0] == "report-util") {
-
+		//to be continued
+        this->toPrint.push_back(args[0] + " command recognized. Doing something." + '\n');
     }
     else if (args[0] == "screen") {
+        if (args.size() < 2) {
+            this->toPrint.push_back("Error: No process action key entered." + '\n');
+            return;
+        }
+        else if (args[1] == "-r") {
+            if (args.size() < 3) {
+                this->toPrint.push_back("Error: No process name entered." + '\n');
+                return;
+            }
+            else {
 
+            }
+            std::cout << "screen -r" << " command recognized. Doing something." << std::endl;
+			//check if process exists, if no, call ConsoleManager command to create Process.
+        }
+        else if (args[1] == "-s") {
+            if (args.size() < 3) {
+                this->toPrint.push_back("Error: No process name entered." + '\n');
+                return;
+            }
+            std::cout << "screen -s" << " command recognized. Doing something." << std::endl;
+            // create process
+
+            //call ConsoleManager to create Process
+        }
+        else if (args[1] == "-ls") {
+			//use obtain string vector returned by ConsoleManager, then add to toPrint each element of string vector received
+			std::cout << "screen -ls" << " command recognized. Doing something." << std::endl;
+
+        }
+		else {
+			this->toPrint.push_back("Error: 'screen' action entered has too many variables." + '\n');
+		}
     }
     else {
-        this->toPrint.push_back("Command not recognized, please try again.");
+        this->toPrint.push_back("Command not recognized, please try again." + '\n');
     }
 
 }
 
-void MainConsole::onEnabled(std::shared_ptr<Process> process) {}
+void MainConsole::onEnabled(std::shared_ptr<Process> process) {
+
+}
