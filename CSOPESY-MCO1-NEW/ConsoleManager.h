@@ -36,6 +36,9 @@ public:
 	void addProcess(String process);
 	int countNumberProcesses();
 
+	//for Scheduler
+	std::shared_ptr<std::vector<std::shared_ptr<Process>>> giveProcess_InOrderVectorToScheduler();
+
 private:
 	ConsoleManager();
 	~ConsoleManager() = default;
@@ -56,6 +59,9 @@ private:
 	//since unordered map, we need a matchingVector to determine which order nilagay yung mga processes
 	//to be used in MainConsole whenever using 'process -ls'
 	std::vector<String> ProcessOrderVector;
+
+	//another vector to store the processes in order of arrival, this is to be retrieved by scheduler
+	std::shared_ptr<std::vector<std::shared_ptr<Process>>> Process_InOrderVector;
 
 	//HANDLE consoleHandle;
 	bool initialized = false;

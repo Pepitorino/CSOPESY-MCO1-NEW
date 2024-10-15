@@ -5,21 +5,26 @@
 #include "PrintCommand.h"
 #include "ProcessCommandOutput.h"
 
-class CPUSerf : public ThreadClass
+//I just realized, what's the point of making them threads if we're gonna evaluate each core's status per CPU cycle?
+
+class CPUSerf
 {
 public:
 
-	CpuSerf(int coreId); //when constructed, no available process is possible
-	~CpuSerf() = default;
+	CPUSerf(int coreId); //when constructed, no available process is possible
+	~CPUSerf() = default;
 	void tick();
 
-
-	//dont know how to implement yet
 	void switchProcess(std::shared_ptr<Process>);
-	void setRunning(bool running);
+	bool isReady();
+	bool SerfisAvailable();
+
 private:
+
+	//bool GoSignalFromScheduler = false; //if we're gonna be doing Threaded, we can include the tick() in an overrun run() function of the CPUSerf
+
 	int coreId;
 	std::shared_ptr<Process> process;
 	bool SerfisReady; //initialized true
-	bool SerfisAvailable; //initialized true
+	// bool SerfisAvailable; //initialized true, considered not needed since we can just check if process is nullptr or finished state
 };

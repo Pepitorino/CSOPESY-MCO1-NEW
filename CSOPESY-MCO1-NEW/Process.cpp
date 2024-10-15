@@ -8,7 +8,7 @@ Process::Process(String name) {
 	this->pid = ConsoleManager::getInstance()->countNumberProcesses();
 	this->cpuCoreId = 0;
 	this->processProgress = 0;
-	this->state = process_state::READY;
+	this->state = process_state::WAITING;
 
 	//initialize commandList
 	//as for now, 100 printcommands are added to the commandList

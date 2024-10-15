@@ -69,6 +69,8 @@ void ConsoleManager::initProgram() {
 		settings >> temp >> delays;
 		if (temp != "delay-per-exec") throw std::runtime_error("Error: Expected 'delay-per-exec'");
 
+
+
 		Scheduler::initScheduler(cores, schedulingAlgo, quantumCycles, batchProcessFreq, minIns, maxIns, delays);
 	}
 	sharedInstance->initialized = true;
@@ -108,6 +110,11 @@ void ConsoleManager::switchMainConsole() {
 	this->currentConsole = this->mainConsole;
 }
 
+//return a shared_ptr of vector of shared_ptr of Process to be used by Scheduler
+std::shared_ptr<std::vector<std::shared_ptr<Process>>> ConsoleManager::giveProcess_InOrderVectorToScheduler() {
+	return this->Process_InOrderVector;
+}
+
 //Processes table related
 bool ConsoleManager::DoesProcessExist(String process) {
 	return (this->processTable.find(process) == processTable.end()) ? false : true; 
@@ -119,6 +126,9 @@ void ConsoleManager::addProcess(String process) {
 
 	//add to vector
 	this->ProcessOrderVector.push_back(process); 
+
+	//add to Process_InOrderVector
+	this->Process_InOrderVector->push_back(ptrProcess);
 }
 
 int ConsoleManager::countNumberProcesses() {

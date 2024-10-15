@@ -7,6 +7,7 @@ class Process
 {
 public:
 	enum process_state{
+		WAITING,
 		READY,
 		RUNNING,
 		FINISHED
