@@ -25,11 +25,11 @@ void Process::setState(process_state state) {
 }
 
 //add command to commandList, command is to be provided in scheduler-test from MainConsole->ConsoleManager
-void Process::addCommand(ICommand command) {
+void Process::addCommand(ICommand* command) {
 	this->commandList.push_back(command);
 }
 
-ICommand Process::getNextCommand() {
+ICommand* Process::getNextCommand() {
 	return this->commandList[this->processProgress];
 }
 

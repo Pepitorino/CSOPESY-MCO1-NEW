@@ -27,7 +27,9 @@ private:
 	Scheduler();
 	~Scheduler() = default;
 	Scheduler(Scheduler const&) {}; //copy constructor is private
-	void hireCPUSerfs();
+	void hireCPUSerfs(int cores);
+	void GiveWorkToSerf(int coreid, std::shared_ptr<Process> Process_FromQueue);
+	void run();
 	void ProcessQueuer(); //adds process to processqueue
 	//void ProcessQueueUpdater();
 	int ProcessWaitingChecker();

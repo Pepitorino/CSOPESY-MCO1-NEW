@@ -7,9 +7,8 @@ class PrintCommand :
 {
 public:
 	//has CommandType getCommandType(); from ICommand
-    PrintCommand(String toPrint, CommandType commType = PRINT);
-    void execute() override;
-	String executePrint();
+    PrintCommand(String toPrint, CommandType commType = CommandType::PRINT);
+    String execute() override;
 
 private:
     //int pid; //unnecessary, already in CPUSerf when creating

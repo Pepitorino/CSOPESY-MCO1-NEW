@@ -139,7 +139,9 @@ int ConsoleManager::countNumberProcesses() {
 std::vector<String> ConsoleManager::obtainProcessDetails() {
 	//iterate through processTable by sequence of ProcessOrderVector and return a vector of strings
 	//to obtain from each process: process name \t time of last command executed (MM/DD/YYYY) \t
-	//Last core run on Process (if finished, display Finished), \t current line of code (processProgress)/commandList.size()
+	//Last core run on Process (if finished, display Finished), \t current line of code (processProgress)/commandList.size;
+	std::vector<String> strings;
+	return strings;
 }
 
 //ProcessConsole related

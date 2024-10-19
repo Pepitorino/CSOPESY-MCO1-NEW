@@ -35,6 +35,7 @@ public:
 	bool DoesProcessExist(String process);
 	void addProcess(String process);
 	int countNumberProcesses();
+	std::vector<String> obtainProcessDetails();
 
 	//for Scheduler
 	std::shared_ptr<std::vector<std::shared_ptr<Process>>> giveProcess_InOrderVectorToScheduler();

@@ -6,7 +6,7 @@
 class Process
 {
 public:
-	enum process_state{
+	enum process_state {
 		WAITING,
 		READY,
 		RUNNING,
@@ -15,11 +15,12 @@ public:
 
 	Process(String name);
 	void CommandExecuted(int RanbyCPUID); //increases process progress, and changes state to finished if finished
-	ICommand getNextCommand();
+	ICommand* getNextCommand();
 	void setState(process_state state);
 	process_state getState();
 	bool hasRemainingCommands();
 	void addProcessOutput(ProcessCommandOutput output);
+	void addCommand(ICommand* command);
 
 private:
 	String processName;
@@ -31,10 +32,9 @@ private:
 	//ICommand's index, tells the process is finished.
 
 
-	std::vector<ICommand> commandList; // to be evaluated by the CPUSerf
+	std::vector<ICommand*> commandList; // to be evaluated by the CPUSerf
 	std::vector<ProcessCommandOutput> ProcessOutputs;
 	process_state state; //to be evaluated by the scheduler
-	
+
 	//SOON: 'print' command is to iterate through the ProcessOutputs vector of the process. 
 };
-

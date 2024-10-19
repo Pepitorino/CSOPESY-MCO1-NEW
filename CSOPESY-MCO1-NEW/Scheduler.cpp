@@ -1,5 +1,6 @@
 #include "Scheduler.h"
 #include "CPUSerf.h"
+#include "ConsoleManager.h"
 
 Scheduler* Scheduler::SCHEDULER_FOR_THE_STREETS = nullptr;
 
@@ -25,24 +26,24 @@ void Scheduler::destroy()
 
 void Scheduler::initScheduler(int cores, SchedulingAlgo scheduler, uint32_t quantumCycles, uint32_t batchProcessFreq, uint32_t minIns, uint32_t maxIns, uint32_t delays)
 {
-	this->cores = cores;
-	this->schedulingAlgo = scheduler;
-	this->quantumCycles = quantumCycles;
-	this->batchProcessFreq = batchProcessFreq;
-	this->minIns = minIns;
-	this->maxIns = maxIns;
-	this->delays = delays;
-	this->running = true;
+	SCHEDULER_FOR_THE_STREETS->cores = cores;
+	SCHEDULER_FOR_THE_STREETS->schedulingAlgo = scheduler;
+	SCHEDULER_FOR_THE_STREETS->quantumCycles = quantumCycles;
+	SCHEDULER_FOR_THE_STREETS->batchProcessFreq = batchProcessFreq;
+	SCHEDULER_FOR_THE_STREETS->minIns = minIns;
+	SCHEDULER_FOR_THE_STREETS->maxIns = maxIns;
+	SCHEDULER_FOR_THE_STREETS->delays = delays;
+	SCHEDULER_FOR_THE_STREETS->running = true;
 
 	//auto updated by ConsoleManager since shared_ptr
-	this->processListCopy ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
-	hireCPUSerfs();
+	SCHEDULER_FOR_THE_STREETS->processListCopy = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
+	SCHEDULER_FOR_THE_STREETS->hireCPUSerfs(SCHEDULER_FOR_THE_STREETS->cores);
 }
 
-void Scheduler::hireCPUSerfs() {
+void Scheduler::hireCPUSerfs(int cores) {
 	for (int i = 0; i < cores; i++)
 	{
-		cpuList.push_back(std::make_shared<CPUSerf>(i));
+		SCHEDULER_FOR_THE_STREETS->cpuList.push_back(std::make_shared<CPUSerf>(i));
 	}
 }
 
@@ -75,7 +76,7 @@ void Scheduler::ProcessQueuer() {
 		return;
 	}
 	int indexOfProcessWaiting = ProcessWaitingChecker();
-	else if (indexOfProcessWaiting != -1) {
+	if (indexOfProcessWaiting != -1) {
 		processQueue.push(processListCopy->at(indexOfProcessWaiting));
 		processListCopy->at(indexOfProcessWaiting)->setState(Process::READY);
 	}
@@ -126,4 +127,8 @@ void Scheduler::run() {
 		}
 		else if (AreAllSerfsReady()) MakeSerfDoWork();
 	}
+}
+
+void Scheduler::tick() {
+
 }

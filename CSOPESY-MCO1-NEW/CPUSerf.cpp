@@ -33,8 +33,8 @@ void CPUSerf::tick() {
 		// since FCFS, keep this process state to RUNNING
 		this->process->setState(Process::RUNNING);
 		//obtain latest command
-		if (this->process->getNextCommand().getCommandType() == ICommand::PRINT) {
-			String print_output = this->process->getNextCommand().executePrint();
+		if (this->process->getNextCommand()->getCommandType() == ICommand::PRINT) {
+			String print_output = this->process->getNextCommand()->execute();
 			time_t time_now = time(0);
 			ProcessCommandOutput output = ProcessCommandOutput(this->coreId, time_now, print_output);
 			this->process->addProcessOutput(output);

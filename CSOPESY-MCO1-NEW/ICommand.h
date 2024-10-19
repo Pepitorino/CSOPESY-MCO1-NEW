@@ -3,6 +3,7 @@
 
 class ICommand
 {
+public:
 	enum CommandType
 	{
 		IO,
@@ -11,7 +12,7 @@ class ICommand
 
 	ICommand(CommandType commandType);
 	CommandType getCommandType();
-	virtual void execute() = 0;
+	virtual String execute() = 0;
 
 protected:
 	CommandType commandType;

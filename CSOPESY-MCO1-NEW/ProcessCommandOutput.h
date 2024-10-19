@@ -19,4 +19,4 @@ private:
 	time_t timeOfExecution;
 	String Output;
 	OutputType outputType;
-}
+};

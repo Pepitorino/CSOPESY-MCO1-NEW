@@ -6,14 +6,9 @@ PrintCommand::PrintCommand(String toPrint, CommandType commType) : ICommand (com
 	this->toPrint = toPrint;
 }
 
-String PrintCommand::executePrint()
+String PrintCommand::execute()
 {
 	return this->toPrint;
-}
-
-void PrintCommand::execute()
-{
-
 	//implementation found to be unnecessary, since CPUSerf would handle the contents to be put into the ProcessCommandOutput
 
 	//should we print this? Nahhh, let's just log it

@@ -21,7 +21,8 @@ ProcessCommandOutput::ProcessCommandOutput(int coreId, time_t timeOfExecution, S
 	char timeBuffer[80];
 	strftime(timeBuffer, sizeof(timeBuffer), "%m/%d/%Y %I:%M:%S%p", &localTime);
 	std::cout << "Time Started: " << timeBuffer << std::endl;
-	String string_output = "(" + timeBuffer + ")" + "Core:" + std::to_string(coreId) + " " + input_OutputfromProcess;
+	String timeBuffer2 = timeBuffer;
+	String string_output = "(" + timeBuffer2 + ")" + "Core:" + std::to_string(coreId) + " " + input_OutputfromProcess;
 
 	this->Output = string_output;
 }
