@@ -22,23 +22,31 @@
     <ClInclude Include="AConsole.h" />
     <ClInclude Include="AScheduler.h" />
     <ClInclude Include="ConsoleManager.h" />
+    <ClInclude Include="CPUSerf.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="MainConsole.h" />
+    <ClInclude Include="PrintCommand.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="ProcessCommandOutput.h" />
     <ClInclude Include="ProcessConsole.h" />
     <ClInclude Include="Scheduler.h" />
+    <ClInclude Include="ThreadClass.h" />
     <ClInclude Include="TypeDefRepo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AConsole.cpp" />
     <ClCompile Include="AScheduler.cpp" />
     <ClCompile Include="ConsoleManager.cpp" />
+    <ClCompile Include="CPUSerf.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainConsole.cpp" />
+    <ClCompile Include="PrintCommand.cpp" />
     <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProcessCommandOutput.cpp" />
     <ClCompile Include="ProcessConsole.cpp" />
     <ClCompile Include="Scheduler.cpp" />
+    <ClCompile Include="ThreadClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />

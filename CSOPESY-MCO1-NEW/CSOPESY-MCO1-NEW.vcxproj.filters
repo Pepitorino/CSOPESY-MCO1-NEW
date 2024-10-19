@@ -42,6 +42,18 @@
     <ClInclude Include="ProcessConsole.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUSerf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessCommandOutput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +81,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProcessConsole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUSerf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessCommandOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
