@@ -15,12 +15,12 @@ public:
 
 	Process(String name);
 	void CommandExecuted(int RanbyCPUID); //increases process progress, and changes state to finished if finished
-	ICommand* getNextCommand();
+	std::shared_ptr<ICommand> getNextCommand();
 	void setState(process_state state);
 	process_state getState();
 	bool hasRemainingCommands();
 	void addProcessOutput(ProcessCommandOutput output);
-	void addCommand(ICommand* command);
+	void addCommand(std::shared_ptr<ICommand> command);
 
 private:
 	String processName;
@@ -32,7 +32,7 @@ private:
 	//ICommand's index, tells the process is finished.
 
 
-	std::vector<ICommand*> commandList; // to be evaluated by the CPUSerf
+	std::vector<std::shared_ptr<ICommand>> commandList; // to be evaluated by the CPUSerf
 	std::vector<ProcessCommandOutput> ProcessOutputs;
 	process_state state; //to be evaluated by the scheduler
 

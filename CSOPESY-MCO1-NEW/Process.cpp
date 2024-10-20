@@ -1,6 +1,7 @@
 #include "Process.h"
 #include "ConsoleManager.h"
 #include "TypeDefRepo.h"
+#include "PrintCommand.h"
 
 //only called in MainConsole whenever there is a successful checking of non-existing process inquired.
 Process::Process(String name) {
@@ -12,6 +13,9 @@ Process::Process(String name) {
 
 	//initialize commandList
 	//as for now, 100 printcommands are added to the commandList
+	for (int i = 0; i < 100; i++) {
+		this->commandList.push_back(std::make_shared<PrintCommand>("Hello World from Process " + name));
+	}
 }
 
 //return state
@@ -25,11 +29,11 @@ void Process::setState(process_state state) {
 }
 
 //add command to commandList, command is to be provided in scheduler-test from MainConsole->ConsoleManager
-void Process::addCommand(ICommand* command) {
+void Process::addCommand(std::shared_ptr<ICommand> command) {
 	this->commandList.push_back(command);
 }
 
-ICommand* Process::getNextCommand() {
+std::shared_ptr<ICommand> Process::getNextCommand() {
 	return this->commandList[this->processProgress];
 }
 
