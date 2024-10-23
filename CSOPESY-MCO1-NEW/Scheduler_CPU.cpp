@@ -8,10 +8,31 @@ void Scheduler::hireCPUSerfs(int cores) {
 	}
 }
 
+//to be called by CPUs whenever they're ready to take in a new process
 bool Scheduler::CPUProcessRequest(int CPUid) {
 	//use lock_guard to lock the mutex
 	std::lock_guard<std::mutex> lock(processQueueMutex);
 	//create a shared_ptr of Process to be used by CPUSerf
 	std::shared_ptr<Process> Process_ToGive = nullptr;
 
+	//check if processQueue is empty
+	if (processQueue.empty()) {
+		this->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+		return false;
+	} 
+	//if not empty, get the front process
+	Process_ToGive = processQueue.front();
+	//give the process to the CPUSerf
+	this->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+	//pop the process from the processQueue
+	processQueue.pop();
+	return true;
+	//auto unlock mutex when lock_guard goes out of scope
+}
+
+//to be called when shutting down
+void Scheduler::fireSerfs() {
+	for (std::shared_ptr<CPUSerf>& serf : cpuList) {
+		serf->fireSerf();
+	}
 }

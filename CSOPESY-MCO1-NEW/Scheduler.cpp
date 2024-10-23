@@ -2,12 +2,6 @@
 #include "CPUSerf.h"
 #include "ConsoleManager.h"
 
-//other Scheduler files
-#include "Scheduler_CPU.cpp"
-#include "Scheduler_ProcessQueue.cpp"
-//#include "CPUSerf.h"
-//#include "ConsoleManager.h"
-
 Scheduler* Scheduler::SCHEDULER_FOR_THE_STREETS = nullptr;
 
 Scheduler* Scheduler::getInstance()
@@ -19,7 +13,7 @@ void Scheduler::initialize() {
 	SCHEDULER_FOR_THE_STREETS = new Scheduler();
 }
 
-Scheduler::Scheduler()
+Scheduler::Scheduler() : ThreadClass()
 {
 	initialized = true;
 	this->processCounter = 0; // to be used by ProcessQueuer() whenever this procCounter < processQueue->size()
@@ -54,6 +48,12 @@ void Scheduler::run() {
 		ProcessQueuer();
 		// no need to check for empty cores, they do their own request to Scheduler if there's no work for them to do
 	}
+}
+
+void Scheduler::shutdown() {
+	running = false;
+	fireSerfs();
+	this->destroy();
 }
 
 void Scheduler::tick() {
