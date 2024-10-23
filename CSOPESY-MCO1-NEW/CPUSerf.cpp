@@ -1,10 +1,14 @@
 #include "CPUSerf.h"
 #include "ProcessCommandOutput.h"
 
-CPUSerf::CPUSerf(int coreId) {
+CPUSerf::CPUSerf(int coreId, int RRLimit) {
 	this->coreId = coreId;
 	this->process = nullptr; //when constructed, no available process is possible
 	this->SerfisReady = true; //initialized true
+	this->CPUCycles = 0;
+	this->CPUWaittime = 0;
+	this->CPUCyclesCounter = 0;
+	this->RRLimit = RRLimit;
 	//this->SerfisAvailable = true; //initialized true
 }
 

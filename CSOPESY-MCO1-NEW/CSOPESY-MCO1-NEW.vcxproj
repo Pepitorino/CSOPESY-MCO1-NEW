@@ -46,6 +46,8 @@
     <ClCompile Include="ProcessCommandOutput.cpp" />
     <ClCompile Include="ProcessConsole.cpp" />
     <ClCompile Include="Scheduler.cpp" />
+    <ClCompile Include="Scheduler_CPU.cpp" />
+    <ClCompile Include="Scheduler_ProcessQueue.cpp" />
     <ClCompile Include="ThreadClass.cpp" />
   </ItemGroup>
   <ItemGroup>

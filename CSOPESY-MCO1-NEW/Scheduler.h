@@ -2,6 +2,7 @@
 #include "TypeDefRepo.h"
 #include "Process.h"
 #include "CPUSerf.h"
+#include <mutex>
 
 class Scheduler : public ThreadClass
 {
@@ -22,6 +23,7 @@ public:
 	// void ProcessQueuer
 	//void addProcess(); //adds process to processqueue 
 	void finishProcess();
+	bool CPUProcessRequest();
 private:
 
 	Scheduler();
@@ -31,12 +33,7 @@ private:
 	void GiveWorkToSerf(int coreid, std::shared_ptr<Process> Process_FromQueue);
 	void run();
 	void ProcessQueuer(); //adds process to processqueue
-	//void ProcessQueueUpdater();
-	int ProcessWaitingChecker();
-	bool ProcessinReadyQueueCheck();
-	int CPUisAvailable();
-	bool AreAllSerfsReady();
-	void MakeSerfDoWork();
+	int ProcessWaitingChecker(); //checks if there are processes waiting to be added to processQueue
 
 
 	Scheduler& operator=(Scheduler const&) {}; //assignment operator is private
@@ -44,7 +41,7 @@ private:
 	//processqueue is a sharedptr now between scheduler and its scheduling type
 	bool initialized = false;
 	bool running;
-
+	std::mutex processQueueMutex;
 
 
 	// we don't have a vector of shared_ptr processes in Console Manager, so a solution is to have a processList copy in Sched
@@ -59,6 +56,8 @@ private:
 	//AScheduler scheduler;
 
 	//config settings
+	//include mutex for processQueue
+
 	int cores;
 	int processCounter;
 	SchedulingAlgo schedulingAlgo;

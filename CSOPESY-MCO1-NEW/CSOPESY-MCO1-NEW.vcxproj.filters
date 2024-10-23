@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Scheduler">
+      <UniqueIdentifier>{a4f8bc4f-a58f-42f9-a2f8-159144b8da06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Process">
+      <UniqueIdentifier>{26f60410-9180-4de6-80ac-a97142949c56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TypeDefRepo.h">
@@ -59,12 +65,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Scheduler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Process.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ICommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,8 +92,20 @@
     <ClCompile Include="PrintCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scheduler.cpp">
+      <Filter>Source Files\Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="Scheduler_ProcessQueue.cpp">
+      <Filter>Source Files\Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="Process.cpp">
+      <Filter>Source Files\Process</Filter>
+    </ClCompile>
     <ClCompile Include="ProcessCommandOutput.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="Scheduler_CPU.cpp">
+      <Filter>Source Files\Scheduler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

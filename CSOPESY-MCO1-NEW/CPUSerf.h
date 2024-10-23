@@ -7,11 +7,11 @@
 
 //I just realized, what's the point of making them threads if we're gonna evaluate each core's status per CPU cycle?
 
-class CPUSerf
+class CPUSerf : public ThreadClass
 {
 public:
 
-	CPUSerf(int coreId); //when constructed, no available process is possible
+	CPUSerf(int coreId, int RRLimit); //when constructed, no available process is possible
 	~CPUSerf() = default;
 	void tick();
 
@@ -26,5 +26,9 @@ private:
 	int coreId;
 	std::shared_ptr<Process> process;
 	bool SerfisReady; //initialized true
+
+	uint32_t CPUCycles, CPUWaittime; // needed pa ba this?
+	int CPUCyclesCounter; // for RR
+	int RRLimit; // for RR, -1 for FCFS
 	// bool SerfisAvailable; //initialized true, considered not needed since we can just check if process is nullptr or finished state
 };
