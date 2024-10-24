@@ -127,7 +127,10 @@ bool ConsoleManager::DoesProcessExist(String process) {
 }
 
 void ConsoleManager::addProcess(String process) {
-	std::shared_ptr<Process> ptrProcess = std::make_shared<Process>(process);
+	int range = this->maxIns - this->minIns;
+	int randomNum = rand() % range + this->minIns;
+
+	std::shared_ptr<Process> ptrProcess = std::make_shared<Process>(process, randomNum);
 	this->processTable.insert(std::make_pair(process, ptrProcess));
 
 	//add to vector
@@ -173,5 +176,9 @@ void ConsoleManager::createDummyProcess(int timeslice) {
 
 	String name = "process" + std::to_string(this->countNumberProcesses());
 
-	this->Process_InOrderVector->push_back(std::make_shared<Process>(name, randomNum));
+	std::shared_ptr<Process> process = std::make_shared<Process>(name, randomNum);
+
+	this->processTable.insert(std::make_pair(name, process));
+	this->ProcessOrderVector.push_back(name);
+	this->Process_InOrderVector->push_back(process);
 }
