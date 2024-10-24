@@ -1,5 +1,6 @@
 #include "ConsoleManager.h"
 #include "Scheduler.h"
+#include "TypeDefRepo.h"
 // mostly the same as our old one
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
 
@@ -56,14 +57,19 @@ void ConsoleManager::initProgram() {
 		// 4. Reading batch-process-freq
 		settings >> temp >> batchProcessFreq;
 		if (temp != "batch-process-freq") throw std::runtime_error("Error: Expected 'batch-process-freq'");
+		sharedInstance->batchProcessFreq = batchProcessFreq;
 
 		// 5. Reading min-ins
 		settings >> temp >> minIns;
 		if (temp != "min-ins") throw std::runtime_error("Error: Expected 'min-ins'");
+		sharedInstance->minIns = minIns;
 
 		// 6. Reading max-ins
 		settings >> temp >> maxIns;
 		if (temp != "max-ins") throw std::runtime_error("Error: Expected 'max-ins'");
+		sharedInstance->maxIns = maxIns;
+
+		if (maxIns < minIns) throw std::runtime_error("Error: Max instructions should be less than minimum instructions.");
 
 		// 7. Reading delay-per-exec
 		settings >> temp >> delays;
@@ -156,3 +162,16 @@ void ConsoleManager::tick() {
 }
 
 //create dummy processes
+void ConsoleManager::createDummyProcess(int timeslice) {
+	//exit conditions
+	if (!this->initialized) return;
+	if (timeslice % this->batchProcessFreq == 0) return;
+	if (!this->creatingBatches) return;
+
+	int range = this->maxIns - this->minIns;
+	int randomNum = rand() % range + this->minIns;
+
+	String name = "process" + std::to_string(this->countNumberProcesses());
+
+	this->Process_InOrderVector->push_back(std::make_shared<Process>(name, randomNum));
+}

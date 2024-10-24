@@ -13,7 +13,7 @@ public:
 		FINISHED
 	};
 
-	Process(String name);
+	Process(String name, int instructions);
 	void CommandExecuted(int RanbyCPUID); //increases process progress, and changes state to finished if finished
 	std::shared_ptr<ICommand> getNextCommand();
 	void setState(process_state state);

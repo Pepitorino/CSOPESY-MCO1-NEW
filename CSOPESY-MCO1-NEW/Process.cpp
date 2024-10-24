@@ -4,7 +4,7 @@
 #include "PrintCommand.h"
 
 //only called in MainConsole whenever there is a successful checking of non-existing process inquired.
-Process::Process(String name) {
+Process::Process(String name, int instructions) {
 	this->processName = name;
 	this->pid = ConsoleManager::getInstance()->countNumberProcesses();
 	this->cpuCoreId = 0;
@@ -12,8 +12,7 @@ Process::Process(String name) {
 	this->state = process_state::WAITING;
 
 	//initialize commandList
-	//as for now, 100 printcommands are added to the commandList
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < instructions; i++) {
 		this->commandList.push_back(std::make_shared<PrintCommand>("Hello World from Process " + name));
 	}
 }

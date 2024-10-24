@@ -25,6 +25,7 @@ public:
 	//void finishProcess();
 	bool CPUProcessRequest(int CPUid); // to be used by CPUSerf whenever it's ready to take in a new process
 	void shutdown();
+	void run();
 
 private:
 
@@ -34,7 +35,6 @@ private:
 	void hireCPUSerfs(int cores);
 	void fireSerfs();
 	void GiveWorkToSerf(int coreid, std::shared_ptr<Process> Process_FromQueue);
-	void run();
 	void ProcessQueuer(); //adds process to processqueue
 	int ProcessWaitingChecker(); //checks if there are processes waiting to be added to processQueue
 

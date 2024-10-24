@@ -1,6 +1,7 @@
 #include "Scheduler.h"
 #include "CPUSerf.h"
 #include "ConsoleManager.h"
+#include "TypeDefRepo.h"
 
 Scheduler* Scheduler::SCHEDULER_FOR_THE_STREETS = nullptr;
 
@@ -42,10 +43,13 @@ void Scheduler::initScheduler(int cores, SchedulingAlgo scheduler, uint32_t quan
 }
 
 void Scheduler::run() {
+	while (!initialized) {
+		Sleep(5);
+	}
 	while (running)
 	{
 		//no need ProcessUpdater() since it's already shared_ptr to vector of shared_ptr of Process in ConsoleManager
-		ProcessQueuer();
+		this->ProcessQueuer();
 		// no need to check for empty cores, they do their own request to Scheduler if there's no work for them to do
 	}
 }

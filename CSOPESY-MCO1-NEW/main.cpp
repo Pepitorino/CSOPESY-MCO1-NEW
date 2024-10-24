@@ -3,7 +3,8 @@
 #include "Scheduler.h"
 
 int main() {
-	int cpuCycles;
+	srand(time(NULL));
+	uint64_t timeslice = 1;
 	bool running = true;
 
 	ConsoleManager::initialize();
@@ -11,11 +12,13 @@ int main() {
 
 	ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
 	Scheduler* schedulerInstance = Scheduler::getInstance();
-	std::cout << consoleManagerInstance;
+
+	std::thread SchedulerThread(std::bind(&Scheduler::run, schedulerInstance));
 
 	while (consoleManagerInstance->getRunning()) {
+		consoleManagerInstance->createDummyProcess(timeslice);
 		consoleManagerInstance->tick();
-		schedulerInstance->tick();
+		timeslice++;
 	}
 
 	ConsoleManager::destroy();

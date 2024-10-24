@@ -30,6 +30,7 @@ public:
 
 	void switchMainConsole();
 	void switchProcessConsole(String process);
+	void createDummyProcess(int timeslice);
 
 	//process table related
 	bool DoesProcessExist(String process);
@@ -67,5 +68,11 @@ private:
 	//HANDLE consoleHandle;
 	bool initialized = false;
 	bool running = true;
+
+	//Batch process creation
+	bool creatingBatches = false;
+	uint32_t batchProcessFreq = 0;
+	uint32_t minIns = 0;
+	uint32_t maxIns = 0;
 };
 
