@@ -13,6 +13,7 @@ void ConsoleManager::initialize()
 {
 	std::cout << "Hello World"; //debugging
 	sharedInstance = new ConsoleManager();
+	sharedInstance->Process_InOrderVector = std::make_shared<std::vector<std::shared_ptr<Process>>>();
 }
 
 void ConsoleManager::initProgram() {
