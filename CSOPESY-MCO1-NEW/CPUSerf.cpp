@@ -1,6 +1,7 @@
 #include "CPUSerf.h"
 #include "ProcessCommandOutput.h"
 #include "Scheduler.h"
+#include "ConsoleManager.h"
 
 CPUSerf::CPUSerf(int coreId, int RRLimit) : ThreadClass() {
 	this->coreId = coreId;
@@ -41,7 +42,7 @@ void CPUSerf::ProcessWaitAndGet() {
 
 	//call CPUProcessRequest(this->coreId) from Scheduler
 	bool waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
-	while (waiting) {
+	while (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
 		CPUWaittime++;
 		CPUCycles++;
 		waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
@@ -51,10 +52,10 @@ void CPUSerf::ProcessWaitAndGet() {
 void CPUSerf::run() {
 	//this->SerfisReady = false;
 	while (SerfisRunning) {
-		if (this->process == nullptr) {
+		if (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
 			this->ProcessWaitAndGet();
 		}
-		else if (this->process->hasRemainingCommands()) {
+		else if (ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
 			
 			//either FCFS or RR, keep them RUNNING
 			this->process->setState(Process::RUNNING);

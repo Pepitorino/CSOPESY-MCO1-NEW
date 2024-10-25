@@ -5,7 +5,7 @@ int Scheduler::ProcessWaitingChecker() {
 	//call this function to check if there are processes waiting to be added to processQueue
 	for (int i = 0; i < processListCopy->size(); i++)
 	{
-		if (processListCopy->at(i)->getState() == Process::WAITING)
+		if (processListCopy->at(i) != nullptr && processListCopy->at(i)->getState() == Process::WAITING)
 			return i;
 	}
 	return -1; //no process waiting
@@ -15,8 +15,10 @@ void Scheduler::ProcessQueuer() {
 	//call this function to add process to processQueue
 	//check if processCounter < size of vector in processListCopy
 	//if so, add the non-accounted shared_ptr<Process> to processQueue
+	if (processListCopy->size() == 0) return;
 	if (processCounter < processListCopy->size())
 	{
+		std::lock_guard<std::mutex> lock(processQueueMutex);
 		processQueue.push(processListCopy->at(processCounter));
 		processListCopy->at(processCounter)->setState(Process::READY);
 		processCounter++;
@@ -24,6 +26,7 @@ void Scheduler::ProcessQueuer() {
 	}
 	int indexOfProcessWaiting = ProcessWaitingChecker();
 	if (indexOfProcessWaiting != -1) {
+		std::lock_guard<std::mutex> lock(processQueueMutex);
 		processQueue.push(processListCopy->at(indexOfProcessWaiting));
 		processListCopy->at(indexOfProcessWaiting)->setState(Process::READY);
 	}

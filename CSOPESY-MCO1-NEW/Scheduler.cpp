@@ -12,16 +12,17 @@ Scheduler* Scheduler::getInstance()
 
 void Scheduler::initialize() {
 	SCHEDULER_FOR_THE_STREETS = new Scheduler();
+	SCHEDULER_FOR_THE_STREETS->initialized = true;
 }
 
 Scheduler::Scheduler() : ThreadClass()
 {
-	initialized = true;
-	this->processCounter = 0; // to be used by ProcessQueuer() whenever this procCounter < processQueue->size()
+
 }
 
 void Scheduler::destroy()
 {
+	SCHEDULER_FOR_THE_STREETS->shutdown();
 	delete SCHEDULER_FOR_THE_STREETS;
 }
 
@@ -35,6 +36,7 @@ void Scheduler::initScheduler(int cores, SchedulingAlgo scheduler, uint32_t quan
 	SCHEDULER_FOR_THE_STREETS->maxIns = maxIns;
 	SCHEDULER_FOR_THE_STREETS->delays = delays;
 	SCHEDULER_FOR_THE_STREETS->running = true;
+	SCHEDULER_FOR_THE_STREETS->processCounter = 0; // to be used by ProcessQueuer() whenever this procCounter < processQueue->size()
 
 	//auto updated by ConsoleManager since shared_ptr
 	SCHEDULER_FOR_THE_STREETS->processListCopy = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
@@ -49,15 +51,15 @@ void Scheduler::run() {
 	while (running)
 	{
 		//no need ProcessUpdater() since it's already shared_ptr to vector of shared_ptr of Process in ConsoleManager
-		this->ProcessQueuer();
+		if (processListCopy != nullptr) SCHEDULER_FOR_THE_STREETS->ProcessQueuer();
 		// no need to check for empty cores, they do their own request to Scheduler if there's no work for them to do
+		Sleep(100);
 	}
 }
 
 void Scheduler::shutdown() {
 	running = false;
 	fireSerfs();
-	this->destroy();
 }
 
 void Scheduler::tick() {

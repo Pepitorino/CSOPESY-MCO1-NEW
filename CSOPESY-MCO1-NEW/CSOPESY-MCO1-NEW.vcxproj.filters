@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Process">
       <UniqueIdentifier>{26f60410-9180-4de6-80ac-a97142949c56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ConsoleManager">
+      <UniqueIdentifier>{84935d66-62a7-438f-b231-23b42b6f2155}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TypeDefRepo.h">
@@ -71,9 +74,6 @@
     <ClCompile Include="AScheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -106,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="Scheduler_CPU.cpp">
       <Filter>Source Files\Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleManager.cpp">
+      <Filter>Source Files\ConsoleManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleManager_Process.cpp">
+      <Filter>Source Files\ConsoleManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #include "TypeDefRepo.h"
 #include "Process.h"
 #include "CPUSerf.h"
+#include "ConsoleManager.h"
 #include <mutex>
 
 class Scheduler : public ThreadClass
@@ -34,7 +35,6 @@ private:
 	Scheduler(Scheduler const&) {}; //copy constructor is private
 	void hireCPUSerfs(int cores);
 	void fireSerfs();
-	void GiveWorkToSerf(int coreid, std::shared_ptr<Process> Process_FromQueue);
 	void ProcessQueuer(); //adds process to processqueue
 	int ProcessWaitingChecker(); //checks if there are processes waiting to be added to processQueue
 

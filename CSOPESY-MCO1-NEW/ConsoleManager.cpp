@@ -105,7 +105,10 @@ bool ConsoleManager::getRunning()
 }
 
 void ConsoleManager::end() {
+	//call Scheduler to end
+	Scheduler::getInstance()->shutdown();
 	sharedInstance->running = false;
+	sharedInstance->Process_InOrderVector = nullptr;
 }
 
 void ConsoleManager::drawConsole()
@@ -115,43 +118,6 @@ void ConsoleManager::drawConsole()
 
 void ConsoleManager::switchMainConsole() {
 	this->currentConsole = this->mainConsole;
-}
-
-//return a shared_ptr of vector of shared_ptr of Process to be used by Scheduler
-std::shared_ptr<std::vector<std::shared_ptr<Process>>> ConsoleManager::giveProcess_InOrderVectorToScheduler() {
-	return this->Process_InOrderVector;
-}
-
-//Processes table related
-bool ConsoleManager::DoesProcessExist(String process) {
-	return (this->processTable.find(process) == processTable.end()) ? false : true; 
-}
-
-void ConsoleManager::addProcess(String process) {
-	int range = this->maxIns - this->minIns;
-	int randomNum = rand() % range + this->minIns;
-
-	std::shared_ptr<Process> ptrProcess = std::make_shared<Process>(process, randomNum);
-	this->processTable.insert(std::make_pair(process, ptrProcess));
-
-	//add to vector
-	this->ProcessOrderVector.push_back(process); 
-
-	//add to Process_InOrderVector
-	this->Process_InOrderVector->push_back(ptrProcess);
-}
-
-int ConsoleManager::countNumberProcesses() {
-	return this->processTable.size();
-}
-
-//return a string of vector processes for MainConsole to print regarding Process statuses
-std::vector<String> ConsoleManager::obtainProcessDetails() {
-	//iterate through processTable by sequence of ProcessOrderVector and return a vector of strings
-	//to obtain from each process: process name \t time of last command executed (MM/DD/YYYY) \t
-	//Last core run on Process (if finished, display Finished), \t current line of code (processProgress)/commandList.size;
-	std::vector<String> strings;
-	return strings;
 }
 
 //ProcessConsole related
@@ -165,21 +131,6 @@ void ConsoleManager::tick() {
 	this->currentConsole->process();
 }
 
-//create dummy processes
-void ConsoleManager::createDummyProcess(int timeslice) {
-	//exit conditions
-	if (!this->initialized) return;
-	if (timeslice % this->batchProcessFreq == 0) return;
-	if (!this->creatingBatches) return;
-
-	int range = this->maxIns - this->minIns;
-	int randomNum = rand() % range + this->minIns;
-
-	String name = "process" + std::to_string(this->countNumberProcesses());
-
-	std::shared_ptr<Process> process = std::make_shared<Process>(name, randomNum);
-
-	this->processTable.insert(std::make_pair(name, process));
-	this->ProcessOrderVector.push_back(name);
-	this->Process_InOrderVector->push_back(process);
-}
+bool ConsoleManager::isRunning() {
+	return sharedInstance->running;
+ }

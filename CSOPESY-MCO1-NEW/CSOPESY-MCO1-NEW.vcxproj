@@ -37,6 +37,7 @@
     <ClCompile Include="AConsole.cpp" />
     <ClCompile Include="AScheduler.cpp" />
     <ClCompile Include="ConsoleManager.cpp" />
+    <ClCompile Include="ConsoleManager_Process.cpp" />
     <ClCompile Include="CPUSerf.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="main.cpp" />

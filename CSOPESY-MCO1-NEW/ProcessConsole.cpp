@@ -39,9 +39,10 @@ void ProcessConsole::onEnabled(std::shared_ptr<Process> process) {
 
 //should be similar to the mainconsole, havent added the keyboard polling yet
 void ProcessConsole::process() {
-
+    this->keyboardPolling();
+    this->drawConsole();
 }
 
 void ProcessConsole::drawConsole() {
-
+    //to be added: display
 }

@@ -30,6 +30,7 @@ public:
 
 	void switchMainConsole();
 	void switchProcessConsole(String process);
+	void setCreateBatches(bool setting);
 	void createDummyProcess(int timeslice);
 
 	//process table related
@@ -41,6 +42,7 @@ public:
 	//for Scheduler
 	std::shared_ptr<std::vector<std::shared_ptr<Process>>> giveProcess_InOrderVectorToScheduler();
 
+	bool isRunning();
 private:
 	ConsoleManager();
 	~ConsoleManager() = default;
