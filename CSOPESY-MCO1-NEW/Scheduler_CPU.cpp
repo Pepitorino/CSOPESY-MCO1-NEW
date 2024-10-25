@@ -17,9 +17,9 @@ bool Scheduler::CPUProcessRequest(int CPUid) {
 
 	//check if processQueue is empty
 	if (processQueue.empty()) {
-		this->cpuList.at(CPUid)->switchProcess(Process_ToGive);
 		return false;
 	} 
+
 	//if not empty, get the front process
 	Process_ToGive = processQueue.front();
 	//give the process to the CPUSerf

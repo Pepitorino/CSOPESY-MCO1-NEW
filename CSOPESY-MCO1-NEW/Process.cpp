@@ -10,6 +10,7 @@ Process::Process(String name, int instructions) {
 	this->cpuCoreId = 0;
 	this->processProgress = 0;
 	this->state = process_state::WAITING;
+	this->ProcessOutputs = {};
 
 	//initialize commandList
 	for (int i = 0; i < instructions; i++) {

@@ -40,11 +40,10 @@ void CPUSerf::ProcessWaitAndGet() {
 	// run() function of the CPUSerf running until a process is obtained.
 
 	//call CPUProcessRequest(this->coreId) from Scheduler
-	bool waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
-	while (waiting) {
+	while (this->process == nullptr) {
 		CPUWaittime++;
 		CPUCycles++;
-		waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
+		Scheduler::getInstance()->CPUProcessRequest(this->coreId);
 	};
 }
 

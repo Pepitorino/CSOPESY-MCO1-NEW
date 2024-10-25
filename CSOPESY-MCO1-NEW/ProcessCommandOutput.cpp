@@ -20,7 +20,7 @@ ProcessCommandOutput::ProcessCommandOutput(int coreId, time_t timeOfExecution, S
 	// Create a buffer to hold the formatted time string
 	char timeBuffer[80];
 	strftime(timeBuffer, sizeof(timeBuffer), "%m/%d/%Y %I:%M:%S%p", &localTime);
-	std::cout << "Time Started: " << timeBuffer << std::endl;
+	//std::cout << "Time Started: " << timeBuffer << std::endl;
 	String timeBuffer2 = timeBuffer;
 	String string_output = "(" + timeBuffer2 + ")" + "Core:" + std::to_string(coreId) + " " + input_OutputfromProcess;
 
