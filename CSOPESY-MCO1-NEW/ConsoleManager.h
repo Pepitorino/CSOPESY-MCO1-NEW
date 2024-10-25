@@ -30,6 +30,8 @@ public:
 
 	void switchMainConsole();
 	void switchProcessConsole(String process);
+
+	void setCreateBatches(bool setting);
 	void createDummyProcess(int timeslice);
 
 	//process table related

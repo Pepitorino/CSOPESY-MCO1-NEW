@@ -123,14 +123,15 @@ void MainConsole::commands(String input) {
 
 	else if (args[0] == "scheduler-test") {
 		//to be continued
-		this->toPrint.push_back(args[0] + " command recognized. Doing something.\n");
+		this->toPrint.push_back("Dummy process generation starting...\n");
 
         //to include yung printing out the list of processes
-
+        consoleManagerInstance->setCreateBatches(true);
     }
     else if (args[0] == "scheduler-stop") {
         //to be continued
-        this->toPrint.push_back(args[0] + " command recognized. Doing something.\n");
+        this->toPrint.push_back("Dummy process generation stopping...\n");
+        consoleManagerInstance->setCreateBatches(false);
     }
     else if (args[0] == "report-util") {
 		//to be continued
@@ -147,9 +148,14 @@ void MainConsole::commands(String input) {
                 return;
             }
             else {
-
+                if (!consoleManagerInstance->DoesProcessExist(args[2])) {
+                    this->toPrint.push_back("Error: Process does not exist");
+                }
+                else {
+                    //consoleManagerInstance->switchProcessConsole(args[2]);
+                    this->toPrint.push_back("Switching to process screen...");
+                }
             }
-            std::cout << "screen -r" << " command recognized. Doing something." << std::endl;
 			//check if process exists, if no, call ConsoleManager command to create Process.
         }
         else if (args[1] == "-s") {
@@ -157,15 +163,23 @@ void MainConsole::commands(String input) {
                 this->toPrint.push_back("Error: No process name entered.\n");
                 return;
             }
-            std::cout << "screen -s" << " command recognized. Doing something." << std::endl;
             // create process
-
-            //call ConsoleManager to create Process
+            if (consoleManagerInstance->DoesProcessExist(args[2])) {
+                this->toPrint.push_back("Error: Process already exists\n");
+            }
+            else {
+                consoleManagerInstance->addProcess(args[2]);
+                //consoleManagerInstance->switchProcessConsole(args[2]);
+                this->toPrint.push_back("Process created, Switching to process screen...\n");
+            }
         }
         else if (args[1] == "-ls") {
 			//use obtain string vector returned by ConsoleManager, then add to toPrint each element of string vector received
 			std::cout << "screen -ls" << " command recognized. Doing something." << std::endl;
 
+        }
+        else if (args.size() < 3) {
+            this->toPrint.push_back("Error: unrecognized action key");
         }
 		else {
 			this->toPrint.push_back("Error: 'screen' action entered has too many arguments.\n");

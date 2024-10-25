@@ -183,3 +183,7 @@ void ConsoleManager::createDummyProcess(int timeslice) {
 	this->ProcessOrderVector.push_back(name);
 	this->Process_InOrderVector->push_back(process);
 }
+
+void ConsoleManager::setCreateBatches(bool setting) {
+	this->creatingBatches = setting;
+}
