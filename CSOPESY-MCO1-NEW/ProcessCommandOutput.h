@@ -14,6 +14,8 @@ public:
 		IO
 	};
 
+	time_t getTimeOfExecution();
+
 private:
 	int coreId;
 	time_t timeOfExecution;

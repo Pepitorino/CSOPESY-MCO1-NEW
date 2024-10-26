@@ -26,3 +26,8 @@ ProcessCommandOutput::ProcessCommandOutput(int coreId, time_t timeOfExecution, S
 
 	this->Output = string_output;
 }
+
+time_t ProcessCommandOutput::getTimeOfExecution()
+{
+	return this->timeOfExecution;
+}

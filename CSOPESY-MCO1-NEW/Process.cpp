@@ -1,16 +1,16 @@
 #include "Process.h"
 #include "ConsoleManager.h"
-#include "TypeDefRepo.h"
 #include "PrintCommand.h"
 
 //only called in MainConsole whenever there is a successful checking of non-existing process inquired.
 Process::Process(String name, int instructions) {
 	this->processName = name;
 	this->pid = ConsoleManager::getInstance()->countNumberProcesses();
-	this->cpuCoreId = 0;
+	this->cpuCoreId = -1;
 	this->processProgress = 0;
 	this->state = process_state::WAITING;
 	this->ProcessOutputs = {};
+	this->timemade = time(0);
 
 	//initialize commandList
 	for (int i = 0; i < instructions; i++) {
@@ -57,7 +57,49 @@ void Process::CommandExecuted(int RanbyCPUID) {
 	}
 }
 
+
 //add process-smi?
 
 //will deal with file management, utilizes ProcessOutputs vector
 //void Process::print() {}
+
+// for ConsoleManager
+std::tuple<String, String, String, int, int> Process::HoldapTo() {
+	// name, time of last command exc or time made (if no command executed), last core run on, current line code, size of commandList
+	// this->processName
+	String time = "";
+	time_t startTime;
+	if (this->ProcessOutputs.empty()) { // if there are no outputs
+		startTime = this->timemade;
+	}
+	else { // if there are outputs
+		startTime = this->ProcessOutputs.back().getTimeOfExecution();
+	}
+	
+	//time conversion
+
+	// Convert time_t to tm struct for local time
+	struct tm localTime;
+	localtime_s(&localTime, &startTime);
+
+	// Create a buffer to hold the formatted time string
+	char timeBuffer[80];
+	strftime(timeBuffer, sizeof(timeBuffer), "%m/%d/%Y %I:%M:%S%p", &localTime);
+	//std::cout << "Time Started: " << timeBuffer << std::endl;
+	String timeBuffer2 = timeBuffer;
+	time = "(" + timeBuffer2 + ")";
+
+	//this->cpuCoreId
+	String core;
+	if (this->cpuCoreId == -1) {
+		core = "Core: None";
+	}
+	else {
+		core = "Core: " + std::to_string(this->cpuCoreId);
+	}
+
+	//this->processProgress
+	int NumberOfCommands = this->commandList.size();
+
+	return std::make_tuple(this->processName, time, core, this->processProgress, NumberOfCommands);
+}

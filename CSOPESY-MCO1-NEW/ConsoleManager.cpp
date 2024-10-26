@@ -77,7 +77,6 @@ void ConsoleManager::initProgram() {
 		if (temp != "delay-per-exec") throw std::runtime_error("Error: Expected 'delay-per-exec'");
 
 
-
 		Scheduler::initScheduler(cores, schedulingAlgo, quantumCycles, batchProcessFreq, minIns, maxIns, delays);
 	}
 	sharedInstance->initialized = true;

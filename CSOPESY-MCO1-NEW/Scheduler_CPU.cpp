@@ -1,5 +1,28 @@
 #include "Scheduler.h"
 
+/*
+	Scheduler_CPU code division from top to bottom, indicated by "// <--- [(division name)] --->" :
+		1. ConsoleManager purpose functions
+		2. CPU related functions
+*/
+
+// <--- [for ConsoleManager] --->
+//used std::tuple instead of int* for automatic deallocation
+// std::tuple<> is destroyed out of scope
+std::tuple<float, int, int> Scheduler::findCoresUsed() {
+	int numCores = cpuList.size();
+	int coresUsed = 0;
+	for (int i = 0; i < cpuList.size(); i++) 
+		if (cpuList.at(i)->hasProcess()) coresUsed++;
+	
+	float CPUUsePercent = (float)coresUsed / (float)numCores * 100;
+	// coresUsed; //cores used
+	numCores = numCores - coresUsed; //cores available
+
+	return std::make_tuple(CPUUsePercent, coresUsed, numCores);
+}
+
+// <--- [for CPUs] --->
 void Scheduler::hireCPUSerfs(int cores) {
 	for (int i = 0; i < cores; i++)
 	{

@@ -49,6 +49,11 @@ private:
 	ConsoleManager(ConsoleManager const&) {}; //copy constructor is private
 	ConsoleManager& operator=(ConsoleManager const&) {}; //assignment operator is private
 	static ConsoleManager* sharedInstance;
+
+	//for obtaining process details
+	String ProcessDetailsFormatter(std::tuple<String, String, String, int, int> ProcessDetails);
+	String StringShortener(String processName, int width);
+	
 	
 	std::shared_ptr<MainConsole> mainConsole;
 	std::shared_ptr<ProcessConsole> processConsole;

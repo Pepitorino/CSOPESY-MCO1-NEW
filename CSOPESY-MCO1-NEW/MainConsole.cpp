@@ -183,7 +183,11 @@ void MainConsole::commands(String input) {
         else if (args[1] == "-ls") {
 			//use obtain string vector returned by ConsoleManager, then add to toPrint each element of string vector received
 			std::cout << "screen -ls" << " command recognized. Doing something." << std::endl;
-
+			//use consoleManager to get list of String vectors
+			std::vector<String> outputList = consoleManagerInstance->obtainProcessDetails();
+			for (String line : outputList) {
+				this->toPrint.push_back(line);
+			}
         }
 
         else if (args.size() < 3) {

@@ -27,6 +27,7 @@ public:
 	bool CPUProcessRequest(int CPUid); // to be used by CPUSerf whenever it's ready to take in a new process
 	void shutdown();
 	void run();
+	std::tuple<float, int, int> findCoresUsed();
 
 private:
 

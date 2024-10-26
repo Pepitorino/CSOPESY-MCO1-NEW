@@ -17,6 +17,7 @@ public:
 
 	void switchProcess(std::shared_ptr<Process>);
 	void fireSerf(); //to be called by Scheduler when closing the program
+	bool hasProcess(); //{ return process != nullptr; }
 
 private:
 

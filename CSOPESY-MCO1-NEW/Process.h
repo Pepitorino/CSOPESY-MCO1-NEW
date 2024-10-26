@@ -22,6 +22,9 @@ public:
 	void addProcessOutput(ProcessCommandOutput output);
 	void addCommand(std::shared_ptr<ICommand> command);
 
+	//for ConsoleManager
+	std::tuple<String, String, String, int, int> HoldapTo();
+
 private:
 	String processName;
 	int pid;
@@ -31,7 +34,7 @@ private:
 	//sidenote: All ICommands do not have any idea that they have been processed, only the processProgress, when beyond any
 	//ICommand's index, tells the process is finished.
 
-
+	time_t timemade; // in case no command is executed, this will be the time the process will display for screen -ls
 	std::vector<std::shared_ptr<ICommand>> commandList; // to be evaluated by the CPUSerf
 	std::vector<ProcessCommandOutput> ProcessOutputs;
 	process_state state; //to be evaluated by the scheduler

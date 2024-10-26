@@ -88,6 +88,10 @@ void CPUSerf::run() {
 	}
 }
 
+bool CPUSerf::hasProcess() {
+	return this->process != nullptr;
+}
+
 //to be called by Scheduler whenever CPU is ready to take in a new process
 void CPUSerf::switchProcess(std::shared_ptr<Process> process) {
 	this->process = process;
