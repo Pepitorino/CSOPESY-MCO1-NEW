@@ -44,5 +44,13 @@ void ProcessConsole::process() {
 }
 
 void ProcessConsole::drawConsole() {
-    //to be added: display
+    system("cls");
+    std::cout << "Process Name: " << this->displayedProcess->getName() << std::endl;
+    std::cout << "ID: " << this->displayedProcess->getPid() << std::endl;
+    std::cout << std::endl;
+    std::cout << "Current instruction line: " << this->displayedProcess->getProcessProgress() << std::endl;
+    std::cout << "Lines of code: " << this->displayedProcess->getLines() << std::endl;
+
+    std::cout << "Enter command: " << this->command;
+    Sleep(5);
 }

@@ -103,3 +103,19 @@ std::tuple<String, String, String, int, int> Process::HoldapTo() {
 
 	return std::make_tuple(this->processName, time, core, this->processProgress, NumberOfCommands);
 }
+
+String Process::getName() {
+	return this->processName;
+}
+
+int Process::getPid() {
+	return this->pid;
+}
+
+int Process::getProcessProgress() {
+	return this->processProgress;
+}
+
+int Process::getLines() {
+	return this->commandList.size();
+}

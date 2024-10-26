@@ -21,6 +21,10 @@ public:
 	bool hasRemainingCommands();
 	void addProcessOutput(ProcessCommandOutput output);
 	void addCommand(std::shared_ptr<ICommand> command);
+	String getName();
+	int getPid();
+	int getProcessProgress();
+	int getLines();
 
 	//for ConsoleManager
 	std::tuple<String, String, String, int, int> HoldapTo();
