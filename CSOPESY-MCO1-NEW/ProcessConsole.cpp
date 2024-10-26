@@ -1,4 +1,5 @@
 #include "ProcessConsole.h"
+#include "ConsoleManager.h"
 
 ProcessConsole::ProcessConsole() : AConsole("PROCESS_CONSOLE") {
 
@@ -25,7 +26,35 @@ void ProcessConsole::keyboardPolling() {
 }
 
 void ProcessConsole::commands(String input) {
+    ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
+    std::vector<String> args;
+    String delimiter = " ";
+    size_t pos = 0;
 
+    while ((pos = input.find(delimiter)) != String::npos) {
+        String arg = input.substr(0, pos);
+        args.push_back(arg);
+        input.erase(0, pos + delimiter.length());
+    }
+
+    if (!input.empty()) {
+        args.push_back(input);
+    }
+
+    if (args.empty()) {
+        std::cerr << "Error: No command entered." << std::endl;
+        return;
+    }
+
+    if (args[0] == "process-smi") {
+
+    }
+    else if (args[0] == "exit") {
+        consoleManagerInstance->switchMainConsole();
+    }
+    else {
+        this->toPrint.push_back("Command not recognized, please try again.\n");
+    }
 }
 
 //NOTHING SHOULD HAPPEN

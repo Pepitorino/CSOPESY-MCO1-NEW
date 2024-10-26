@@ -155,8 +155,7 @@ void MainConsole::commands(String input) {
                     this->toPrint.push_back("Error: Process does not exist");
                 }
                 else {
-                    //consoleManagerInstance->switchProcessConsole(args[2]);
-                    this->toPrint.push_back("Switching to process screen...");
+                    consoleManagerInstance->switchProcessConsole(args[2]);
                 }
             }
             //std::cout << "screen -r" << " command recognized. Doing something." << std::endl;
@@ -173,8 +172,7 @@ void MainConsole::commands(String input) {
             }
             else {
                 consoleManagerInstance->addProcess(args[2]);
-                //consoleManagerInstance->switchProcessConsole(args[2]);
-                this->toPrint.push_back("Process created, Switching to process screen...\n");
+                consoleManagerInstance->switchProcessConsole(args[2]);
             }
             // create process
 
