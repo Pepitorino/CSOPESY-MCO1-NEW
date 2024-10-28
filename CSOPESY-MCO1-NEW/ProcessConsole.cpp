@@ -10,7 +10,7 @@ void ProcessConsole::keyboardPolling() {
         char key = _getch();
         if (key == 13) {
             String input = this->command;
-            this->toPrint.push_back("Enter command:" + this->command + '\n');
+            this->toPrint.push_back("Enter command: " + this->command + '\n');
             this->command = "";
             if (input != "") this->commands(input);
         }
@@ -47,7 +47,14 @@ void ProcessConsole::commands(String input) {
     }
 
     if (args[0] == "process-smi") {
-
+        String processName = "Process Name: " + this->displayedProcess->getName() + "\n";
+        String pid = "ID: " + std::to_string(this->displayedProcess->getPid()) + "\n\n";
+        String currentLine = "Current instruction line: " + std::to_string(this->displayedProcess->getProcessProgress()) + "\n";
+        String linesCode = "Lines of code: " + std::to_string(this->displayedProcess->getLines()) + "\n";
+        this->toPrint.push_back(processName);
+        this->toPrint.push_back(pid);
+        this->toPrint.push_back(currentLine);
+        this->toPrint.push_back(linesCode);
     }
     else if (args[0] == "exit") {
         consoleManagerInstance->switchMainConsole();
@@ -74,12 +81,9 @@ void ProcessConsole::process() {
 
 void ProcessConsole::drawConsole() {
     system("cls");
-    std::cout << "Process Name: " << this->displayedProcess->getName() << std::endl;
-    std::cout << "ID: " << this->displayedProcess->getPid() << std::endl;
-    std::cout << std::endl;
-    std::cout << "Current instruction line: " << this->displayedProcess->getProcessProgress() << std::endl;
-    std::cout << "Lines of code: " << this->displayedProcess->getLines() << std::endl;
-
+    for (String string : toPrint) {
+        std::cout << string;
+    }
     std::cout << "Enter command: " << this->command;
     Sleep(5);
 }
