@@ -138,7 +138,12 @@ void MainConsole::commands(String input) {
     }
     else if (args[0] == "report-util") {
 		//to be continued
-        this->toPrint.push_back(args[0] + " command recognized. Doing something.\n");
+        std::vector<String> outputList = consoleManagerInstance->obtainProcessDetails();
+        std::fstream ofs;
+        ofs.open("csopesy-log.txt", std::ios::out | std::ios::trunc);
+        for (String string : outputList) ofs << string;
+        ofs.close();
+        this->toPrint.push_back("Report generated at csopesy-log.txt\n");
     }
     else if (args[0] == "screen") {
         if (args.size() < 2) {
