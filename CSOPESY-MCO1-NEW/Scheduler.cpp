@@ -45,15 +45,24 @@ void Scheduler::initScheduler(int cores, SchedulingAlgo scheduler, uint32_t quan
 }
 
 void Scheduler::run() {
+	u_int processQueuerCounter = 0;
 	while (!initialized) {
 		Sleep(5);
 	}
 	while (running)
 	{
+		//update processListCopy
+		//SCHEDULER_FOR_THE_STREETS->processListCopyUpdater();
 		//no need ProcessUpdater() since it's already shared_ptr to vector of shared_ptr of Process in ConsoleManager
-		if (processListCopy != nullptr) SCHEDULER_FOR_THE_STREETS->ProcessQueuer();
+		if ((processQueuerCounter % 3 == 0) && processListCopy != nullptr) {
+			SCHEDULER_FOR_THE_STREETS->processListCopyUpdater();
+			SCHEDULER_FOR_THE_STREETS->ProcessQueuer();
+		}
+		//SCHEDULER_FOR_THE_STREETS->ProcessGiver();
 		// no need to check for empty cores, they do their own request to Scheduler if there's no work for them to do
-		Sleep(100);
+		//Sleep(100);
+		processQueuerCounter++;
+		if (processQueuerCounter == 4000000000) processQueuerCounter = 0;
 	}
 }
 

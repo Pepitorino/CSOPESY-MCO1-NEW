@@ -4,6 +4,8 @@
 // mostly the same as our old one
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
 
+std::shared_mutex ConsoleManager::processListMutex;
+
 ConsoleManager* ConsoleManager::getInstance()
 {
 	return sharedInstance;

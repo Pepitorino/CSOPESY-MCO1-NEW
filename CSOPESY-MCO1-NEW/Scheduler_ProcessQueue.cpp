@@ -1,12 +1,47 @@
 // This file contains the functions for the Scheduler class that are related to the processQueue.
 #include "Scheduler.h"
+#include "ConsoleManager.h"
+
+void Scheduler::processListCopyUpdater() {
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
+	std::lock_guard<std::mutex> lock(processQueueMutex);
+	SCHEDULER_FOR_THE_STREETS->processListCopy = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
+}
+
+//void Scheduler::FinishedProcessVectorUpdater() {
+//	//push_back if there are missing processes in the finishedProcess vector
+//	std::lock_guard<std::mutex> lockglobal(ConsoleManager::processListMutex);
+//	if (processCounter < processListCopy->size()) {
+//		for (int i = processCounter; i < processListCopy->size(); i++) {
+//			SCHEDULER_FOR_THE_STREETS->finishedProcesses.push_back(false);
+//		}
+//	}
+//	for (int i = 0; i < processListCopy->size(); i++) {
+//		if (processListCopy->at(i)->state == Process::FINISHED) {
+//			std::lock_guard<std::mutex> lock(processQueueMutex);
+//			if (std::find(finishedProcesses.begin(), finishedProcesses.end(), processListCopy->at(i)) == finishedProcesses.end()) {
+//				finishedProcesses.push_back(processListCopy->at(i));
+//			}
+//		}
+//	}
+//}
 
 int Scheduler::ProcessWaitingChecker() {
 	//call this function to check if there are processes waiting to be added to processQueue
-	for (int i = 0; i < processListCopy->size(); i++)
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
+	std::lock_guard<std::mutex> lock(processQueueMutex);
+	for (int i = 0; i < processListCopy->size(); i++) 
 	{
-		if (processListCopy->at(i) != nullptr && processListCopy->at(i)->getState() == Process::WAITING)
-			return i;
+		//create copy of process at i
+		
+		if (processListCopy->at(i) != nullptr) {
+			std::unique_lock<std::shared_mutex> lockprocess(processListCopy->at(i)->processMutex);
+			Process* process = processListCopy->at(i).get();
+			
+			if (process->state != Process::FINISHED
+				&& process->state == Process::WAITING)
+				return i;
+		}
 	}
 	return -1; //no process waiting
 }
@@ -24,10 +59,36 @@ void Scheduler::ProcessQueuer() {
 		processCounter++;
 		return;
 	}
+
+	
 	int indexOfProcessWaiting = ProcessWaitingChecker();
 	if (indexOfProcessWaiting != -1) {
+		std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 		std::lock_guard<std::mutex> lock(processQueueMutex);
 		processQueue.push(processListCopy->at(indexOfProcessWaiting));
 		processListCopy->at(indexOfProcessWaiting)->setState(Process::READY);
+	}
+}
+
+void Scheduler::ProcessGiver() {
+	if (running) {
+		std::lock_guard<std::mutex> lock(processQueueMutex);
+		//create a shared_ptr of Process to be used by CPUSerf
+
+		//check if processQueue is empty
+		if (processQueue.empty()) {
+			return;
+		}
+		for (int i = 0; i < cpuList.size(); i++) {
+			if (!(cpuList.at(i)->hasProcess())) {
+				//std::shared_ptr<Process> Process_ToGive = processQueue.front();
+				//processQueue.pop();
+				SCHEDULER_FOR_THE_STREETS->cpuList.at(i)->switchProcess(processQueue.front());
+				processQueue.pop();
+				//pop the process from the processQueue
+				return;
+			}
+		}
+		return;
 	}
 }

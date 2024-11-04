@@ -3,7 +3,6 @@
 #include "Process.h"
 #include "CPUSerf.h"
 #include "ConsoleManager.h"
-#include <mutex>
 
 class Scheduler : public ThreadClass
 {
@@ -36,8 +35,12 @@ private:
 	Scheduler(Scheduler const&) {}; //copy constructor is private
 	void hireCPUSerfs(int cores);
 	void fireSerfs();
-	void ProcessQueuer(); //adds process to processqueue
+	void ProcessQueuer();
+	void ProcessGiver();
+	void processListCopyUpdater();
+	//adds process to processqueue
 	int ProcessWaitingChecker(); //checks if there are processes waiting to be added to processQueue
+	void FinishedProcessVectorUpdater();
 
 
 	Scheduler& operator=(Scheduler const&) {}; //assignment operator is private
@@ -56,6 +59,7 @@ private:
 	//to be used by ProcessQueuer() whenever this->processCounter < processQueue->size()
 	std::queue<std::shared_ptr<Process>> processQueue;
 
+	std::vector<bool> finishedProcesses; //to be skipped in ProcessWaitingChecker
 	
 	//AScheduler scheduler;
 

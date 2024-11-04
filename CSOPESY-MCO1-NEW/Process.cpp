@@ -4,6 +4,7 @@
 
 //only called in MainConsole whenever there is a successful checking of non-existing process inquired.
 Process::Process(String name, int instructions) {
+	std::unique_lock<std::shared_mutex> lock(processMutex);
 	this->processName = name;
 	this->pid = ConsoleManager::getInstance()->countNumberProcesses();
 	this->cpuCoreId = -1;
@@ -20,11 +21,15 @@ Process::Process(String name, int instructions) {
 
 //return state
 Process::process_state Process::getState() {
+	//std::lock_guard<std::mutex> lockglobal(ConsoleManager::processListMutex);
+	//std::lock_guard<std::mutex> lock(processMutex);
 	return this->state;
 }
 
 //set state
 void Process::setState(process_state state) {
+	//std::lock_guard<std::mutex> lockglobal(ConsoleManager::processListMutex);
+	//std::lock_guard<std::mutex> lock(processMutex);
 	this->state = state;
 }
 
@@ -34,20 +39,24 @@ void Process::addCommand(std::shared_ptr<ICommand> command) {
 }
 
 std::shared_ptr<ICommand> Process::getNextCommand() {
+	//std::lock_guard<std::mutex> lock(processMutex);
 	return this->commandList[this->processProgress];
 }
 
 //instead of returning the command, we do this to avoid accessing empty indices
 bool Process::hasRemainingCommands() {
+	//std::lock_guard<std::mutex> lock(processMutex);
 	return this->processProgress < this->commandList.size();
 }
 
 //add ProcessCommandOutput to ProcessOutputs
 void Process::addProcessOutput(ProcessCommandOutput output) {
+	//std::lock_guard<std::mutex> lock(processMutex);
 	this->ProcessOutputs.push_back(output);
 }
 
 void Process::CommandExecuted(int RanbyCPUID) {
+	//std::lock_guard<std::mutex> lock(processMutex);
 	//increase process progress
 	this->cpuCoreId = RanbyCPUID;
 	this->processProgress++;
@@ -118,4 +127,9 @@ int Process::getProcessProgress() {
 
 int Process::getLines() {
 	return this->commandList.size();
+}
+
+int Process::getCpuCoreId()
+{
+	return this->cpuCoreId;
 }

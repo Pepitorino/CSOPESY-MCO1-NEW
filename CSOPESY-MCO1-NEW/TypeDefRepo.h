@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <mutex>
 #include <queue>
 #include <ctime>
 #include <memory>
@@ -16,6 +17,9 @@
 #include <String>
 #include <tuple>
 #include <fstream>
+#include <shared_mutex>
 
 
 typedef std::string String;
+
+extern std::mutex globalProcessListMutex;

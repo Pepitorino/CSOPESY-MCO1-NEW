@@ -26,6 +26,7 @@ private:
 	// run() function of the CPUSerf running until a process is obtained.
 	void run() override;
 	void conductProcess(); //create output in respect to command, create ProcessCommandOutput object w/ string output from commandoutput 
+	void WorkProcess(); //just to work on the process at hand
 	// (in this case executePrint() for PRINT), add to ProcessOutputs vector of Process
 	
 	int coreId;
@@ -35,5 +36,6 @@ private:
 	uint32_t CPUCycles, CPUWaittime; // needed pa ba this?
 	int CPUCyclesCounter; // for RR
 	int RRLimit; // for RR, -1 for FCFS
+	std::mutex CPUMutex;
 	// bool SerfisAvailable; //initialized true, considered not needed since we can just check if process is nullptr or finished state
 };

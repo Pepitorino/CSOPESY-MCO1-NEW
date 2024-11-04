@@ -42,6 +42,8 @@ public:
 	//for Scheduler
 	std::shared_ptr<std::vector<std::shared_ptr<Process>>> giveProcess_InOrderVectorToScheduler();
 
+	static std::shared_mutex processListMutex;
+
 	bool isRunning();
 private:
 	ConsoleManager();

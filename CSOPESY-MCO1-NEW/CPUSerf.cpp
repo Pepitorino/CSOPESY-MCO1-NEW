@@ -21,7 +21,7 @@ void CPUSerf::fireSerf() {
 	this->SerfisRunning = false;
 }
 
-void CPUSerf::conductProcess() {
+void CPUSerf::conductProcess() { 
 	if (this->process->getNextCommand()->getCommandType() == ICommand::PRINT) {
 		String print_output = this->process->getNextCommand()->execute();
 		time_t time_now = time(0);
@@ -40,6 +40,7 @@ void CPUSerf::ProcessWaitAndGet() {
 	//to call a function in the Scheduler to get a process from the processQueue, keeps the 
 	// run() function of the CPUSerf running until a process is obtained.
 
+	std::lock_guard<std::mutex> lock(CPUMutex);
 	//call CPUProcessRequest(this->coreId) from Scheduler
 	bool waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
 	while (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
@@ -49,41 +50,56 @@ void CPUSerf::ProcessWaitAndGet() {
 	};
 }
 
+void CPUSerf::WorkProcess() {
+	std::lock_guard<std::mutex> lock(CPUMutex);
+
+	this->process->setState(Process::RUNNING);
+
+	// if FCFS
+	if (RRLimit == -1)
+		conductProcess();
+	// if RR
+	else if (CPUCyclesCounter < RRLimit) {
+		//obtain latest command
+
+		//check if RR limit is reached
+		conductProcess();
+		CPUCyclesCounter++;
+
+	}
+
+	//this is after CommandExecuted, so we can check if process is finished
+	if (this->process->getState() == Process::FINISHED) {
+		this->process = nullptr;
+		CPUCyclesCounter = 0;
+	}
+	else if (CPUCyclesCounter == RRLimit) {
+		this->process->setState(Process::WAITING);
+		this->process = nullptr;
+		CPUCyclesCounter = 0;
+	}
+	CPUCycles++;
+}
+
 void CPUSerf::run() {
 	//this->SerfisReady = false;
 	while (SerfisRunning) {
 		if (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
 			this->ProcessWaitAndGet();
+			//CPUWaittime++;
+			//CPUCycles++;
 		}
-		else if (ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
-			
-			//either FCFS or RR, keep them RUNNING
-			this->process->setState(Process::RUNNING);
-
-			// if FCFS
-			if (RRLimit == -1)
-				conductProcess();
-			// if RR
-			else if (CPUCyclesCounter < RRLimit) { 
-				//obtain latest command
-				
-				//check if RR limit is reached
-				conductProcess();
-				CPUCyclesCounter++;
-				
-			}
-			
-			//this is after CommandExecuted, so we can check if process is finished
+		else if (this->process != nullptr && ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
+			//this means that the process is in another core that is running
+			std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
+			std::unique_lock<std::shared_mutex> lockprocess(this->process->processMutex);
 			if (this->process->getState() == Process::FINISHED) {
 				this->process = nullptr;
 				CPUCyclesCounter = 0;
 			}
-			else if (CPUCyclesCounter == RRLimit) {
-				this->process->setState(Process::WAITING);
-				this->process = nullptr;
-				CPUCyclesCounter = 0;
-			}
-			CPUCycles++;
+			else if (this->process->getState() == Process::RUNNING && (this->process->getCpuCoreId() != this->coreId)) this->process = nullptr;
+			else this->WorkProcess();
+			//either FCFS or RR, keep them RUNNING
 		}
 	}
 }

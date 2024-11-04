@@ -3,6 +3,7 @@
 #include "ICommand.h"
 #include "ProcessCommandOutput.h"
 
+
 class Process
 {
 public:
@@ -25,9 +26,12 @@ public:
 	int getPid();
 	int getProcessProgress();
 	int getLines();
+	int getCpuCoreId();
 
 	//for ConsoleManager
 	std::tuple<String, String, String, int, int> HoldapTo();
+	process_state state; //to be evaluated by the scheduler
+	mutable std::shared_mutex processMutex;
 
 private:
 	String processName;
@@ -41,7 +45,7 @@ private:
 	time_t timemade; // in case no command is executed, this will be the time the process will display for screen -ls
 	std::vector<std::shared_ptr<ICommand>> commandList; // to be evaluated by the CPUSerf
 	std::vector<ProcessCommandOutput> ProcessOutputs;
-	process_state state; //to be evaluated by the scheduler
 
+	
 	//SOON: 'print' command is to iterate through the ProcessOutputs vector of the process. 
 };

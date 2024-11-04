@@ -24,6 +24,7 @@ void ConsoleManager::createDummyProcess(int timeslice) {
 	if (timeslice % this->batchProcessFreq != 0) return;
 	if (!this->creatingBatches) return;
 
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 	int range = this->maxIns - this->minIns;
 	int randomNum = rand() % range + this->minIns;
 
@@ -44,6 +45,7 @@ void ConsoleManager::setCreateBatches(bool setting) {
 // This funciton assumes that the process name provided is unique.
 //Process Creation, to be used by MainConsole, number of instructions is automatic
 void ConsoleManager::addProcess(String process) {
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 	int range = this->maxIns - this->minIns;
 	int randomNum = rand() % range + this->minIns;
 
