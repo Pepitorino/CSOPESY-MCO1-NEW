@@ -3,7 +3,7 @@
 #include "Scheduler.h"
 #include "ConsoleManager.h"
 
-CPUSerf::CPUSerf(int coreId, int RRLimit) : ThreadClass() {
+CPUSerf::CPUSerf(int coreId, int RRLimit, uint32_t delay) : ThreadClass() {
 	this->coreId = coreId;
 	this->process = nullptr; //when constructed, no available process is possible
 	this->SerfisRunning = true; //initialized true
@@ -11,6 +11,7 @@ CPUSerf::CPUSerf(int coreId, int RRLimit) : ThreadClass() {
 	this->CPUWaittime = 0;
 	this->CPUCyclesCounter = 0;
 	this->RRLimit = RRLimit;
+	this->delay = delay;
 	
 	//this->SerfisAvailable = true; //initialized true
 	this->start();
@@ -52,6 +53,16 @@ void CPUSerf::ProcessWaitAndGet() {
 
 void CPUSerf::WorkProcess() {
 	std::lock_guard<std::mutex> lock(CPUMutex);
+
+	if (delay > 0) {
+		if (CPUCycles % delay == 0) {
+
+		}
+		else {
+			CPUCycles++;
+			return;
+		}
+	}
 
 	this->process->setState(Process::RUNNING);
 

@@ -11,7 +11,7 @@ class CPUSerf : public ThreadClass
 {
 public:
 
-	CPUSerf(int coreId, int RRLimit); //when constructed, no available process is possible
+	CPUSerf(int coreId, int RRLimit, uint32_t delay); //when constructed, no available process is possible
 	~CPUSerf() = default;
 	//void tick();
 
@@ -33,7 +33,7 @@ private:
 	std::shared_ptr<Process> process;
 	bool SerfisRunning; //initialized true
 
-	uint32_t CPUCycles, CPUWaittime; // needed pa ba this?
+	uint32_t CPUCycles, CPUWaittime, delay; // needed pa ba this?
 	int CPUCyclesCounter; // for RR
 	int RRLimit; // for RR, -1 for FCFS
 	std::mutex CPUMutex;
