@@ -40,8 +40,6 @@ private:
 	void processListCopyUpdater();
 	//adds process to processqueue
 	int ProcessWaitingChecker(); //checks if there are processes waiting to be added to processQueue
-	void FinishedProcessVectorUpdater();
-
 
 	Scheduler& operator=(Scheduler const&) {}; //assignment operator is private
 	static Scheduler* SCHEDULER_FOR_THE_STREETS; //singleton instance
@@ -57,10 +55,7 @@ private:
 	//to include CPUSerf vector
 	std::vector<std::shared_ptr<CPUSerf>> cpuList;
 	//to be used by ProcessQueuer() whenever this->processCounter < processQueue->size()
-	std::queue<std::shared_ptr<Process>> processQueue;
-
-	std::vector<bool> finishedProcesses; //to be skipped in ProcessWaitingChecker
-	
+	std::queue<std::shared_ptr<Process>> processQueue;	
 	//AScheduler scheduler;
 
 	//config settings

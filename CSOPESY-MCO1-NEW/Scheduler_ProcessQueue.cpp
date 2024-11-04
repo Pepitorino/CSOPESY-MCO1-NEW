@@ -8,24 +8,6 @@ void Scheduler::processListCopyUpdater() {
 	SCHEDULER_FOR_THE_STREETS->processListCopy = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
 }
 
-//void Scheduler::FinishedProcessVectorUpdater() {
-//	//push_back if there are missing processes in the finishedProcess vector
-//	std::lock_guard<std::mutex> lockglobal(ConsoleManager::processListMutex);
-//	if (processCounter < processListCopy->size()) {
-//		for (int i = processCounter; i < processListCopy->size(); i++) {
-//			SCHEDULER_FOR_THE_STREETS->finishedProcesses.push_back(false);
-//		}
-//	}
-//	for (int i = 0; i < processListCopy->size(); i++) {
-//		if (processListCopy->at(i)->state == Process::FINISHED) {
-//			std::lock_guard<std::mutex> lock(processQueueMutex);
-//			if (std::find(finishedProcesses.begin(), finishedProcesses.end(), processListCopy->at(i)) == finishedProcesses.end()) {
-//				finishedProcesses.push_back(processListCopy->at(i));
-//			}
-//		}
-//	}
-//}
-
 int Scheduler::ProcessWaitingChecker() {
 	//call this function to check if there are processes waiting to be added to processQueue
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);

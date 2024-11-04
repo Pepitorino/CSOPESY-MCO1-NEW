@@ -44,6 +44,7 @@ void MainConsole::keyboardPolling() {
             this->command.push_back(key);
         }
     }
+    Sleep(50);
 }
 
 void MainConsole::onEnabled() {
@@ -67,7 +68,6 @@ void MainConsole::drawConsole() {
     }
 
     std::cout << "\nRoot:\\> " << this->command;
-    Sleep(5);
 }
 
 //TODO:handle commands

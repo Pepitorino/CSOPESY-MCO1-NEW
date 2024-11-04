@@ -61,6 +61,7 @@ void ConsoleManager::addProcess(String process) {
 
 //return a string of vector processes for MainConsole to print regarding Process statuses
 std::vector<String> ConsoleManager::obtainProcessDetails() {
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 	std::vector<String> strings;
 	//iterate through processTable by sequence of ProcessOrderVector and return a vector of strings
 	//to obtain from each process: process name \t time of last command executed (MM/DD/YYYY) \t

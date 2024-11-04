@@ -54,10 +54,10 @@ void Scheduler::run() {
 		//update processListCopy
 		//SCHEDULER_FOR_THE_STREETS->processListCopyUpdater();
 		//no need ProcessUpdater() since it's already shared_ptr to vector of shared_ptr of Process in ConsoleManager
-		if ((processQueuerCounter % 3 == 0) && processListCopy != nullptr) {
+		//if ((processQueuerCounter % 3 == 0) && processListCopy != nullptr) {
 			SCHEDULER_FOR_THE_STREETS->processListCopyUpdater();
 			SCHEDULER_FOR_THE_STREETS->ProcessQueuer();
-		}
+		//}
 		//SCHEDULER_FOR_THE_STREETS->ProcessGiver();
 		// no need to check for empty cores, they do their own request to Scheduler if there's no work for them to do
 		//Sleep(100);
