@@ -31,7 +31,7 @@ void MainConsole::keyboardPolling() {
         char key = _getch();
         if (key == 13) {
             String input = this->command;
-            this->toPrint.push_back("\nEnter command:" + this->command + '\n');
+            this->toPrint.push_back("\nroot:\\> " + this->command + '\n');
             this->command = "";
             if (input != "") this->commands(input);
         }
@@ -66,7 +66,7 @@ void MainConsole::drawConsole() {
         std::cout << string;
     }
 
-    std::cout << "\nEnter command:" << this->command;
+    std::cout << "\nroot:\\> " << this->command;
     Sleep(5);
 }
 

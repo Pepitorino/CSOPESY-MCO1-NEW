@@ -13,8 +13,7 @@ int main() {
 	ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
 	Scheduler* schedulerInstance = Scheduler::getInstance();
 
-	//std::thread SchedulerThread(std::bind(&Scheduler::run, schedulerInstance));
-	// we have separate class for Scheduler
+	schedulerInstance->start();
 
 	while (consoleManagerInstance->getRunning()) {
 		consoleManagerInstance->createDummyProcess(timeslice);

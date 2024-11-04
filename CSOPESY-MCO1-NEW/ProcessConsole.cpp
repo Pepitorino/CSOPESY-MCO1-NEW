@@ -10,7 +10,7 @@ void ProcessConsole::keyboardPolling() {
         char key = _getch();
         if (key == 13) {
             String input = this->command;
-            this->toPrint.push_back("Enter command: " + this->command + '\n');
+            this->toPrint.push_back("root:\\> " + this->command + '\n');
             this->command = "";
             if (input != "") this->commands(input);
         }
@@ -57,6 +57,7 @@ void ProcessConsole::commands(String input) {
         this->toPrint.push_back(linesCode);
     }
     else if (args[0] == "exit") {
+        this->toPrint.clear();
         consoleManagerInstance->switchMainConsole();
     }
     else {
@@ -84,6 +85,6 @@ void ProcessConsole::drawConsole() {
     for (String string : toPrint) {
         std::cout << string;
     }
-    std::cout << "Enter command: " << this->command;
+    std::cout << "root:\\> " << this->command;
     Sleep(5);
 }
