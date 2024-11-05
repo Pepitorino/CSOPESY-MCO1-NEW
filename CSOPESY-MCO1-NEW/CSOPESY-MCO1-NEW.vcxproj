@@ -31,7 +31,7 @@
     <ClInclude Include="AScheduler.h" />
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="CPUSerf.h" />
-    <ClInclude Include="FFMemoryAllocator.h" />
+    <ClInclude Include="PagingAllocator.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IMemoryAllocator.h" />
     <ClInclude Include="MainConsole.h" />
@@ -49,7 +49,7 @@
     <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="ConsoleManager_Process.cpp" />
     <ClCompile Include="CPUSerf.cpp" />
-    <ClCompile Include="FFMemoryAllocator.cpp" />
+    <ClCompile Include="PagingAllocator.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="IMemoryAllocator.cpp" />
     <ClCompile Include="main.cpp" />

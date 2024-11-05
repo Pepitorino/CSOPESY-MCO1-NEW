@@ -2,25 +2,25 @@
 #include "IMemoryAllocator.h"
 #include "TypeDefRepo.h"
 //singleton as well
-class FFMemoryAllocator :
+class PagingAllocator :
     public IMemoryAllocator
 {
 public:
     static void initialize(size_t maxMem, size_t frameSize);
     static void destroy();
-    static FFMemoryAllocator* getInstance();
+    static PagingAllocator* getInstance();
 
     void* allocate(size_t size) override;
     void  deallocate(void* ptr) override;
     String visualizeMemory();
 
 private:
-    FFMemoryAllocator(size_t maxMem, size_t frameSize);
-    FFMemoryAllocator();
-    ~FFMemoryAllocator() = default;
-    FFMemoryAllocator(FFMemoryAllocator const&) {}; //copy constructor is private
-    FFMemoryAllocator& operator=(FFMemoryAllocator const&) {}; //assignment operator is private
-    static FFMemoryAllocator* sharedAllocator;
+    PagingAllocator(size_t maxMem, size_t frameSize);
+    PagingAllocator();
+    ~PagingAllocator() = default;
+    PagingAllocator(PagingAllocator const&) {}; //copy constructor is private
+    PagingAllocator& operator=(PagingAllocator const&) {}; //assignment operator is private
+    static PagingAllocator* sharedAllocator;
 
     size_t maxMem;
     size_t frameSize;
