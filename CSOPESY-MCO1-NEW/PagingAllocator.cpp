@@ -6,7 +6,9 @@ PagingAllocator::PagingAllocator(size_t maxMem, size_t frameSize) : IMemoryAlloc
 	this->maxMem = maxMem;
 	this->frameSize = frameSize;
 	this->numFrames = maxMem / frameSize;
-
+	for (size_t i = 0; i < numFrames; i++) {
+		freeFrameList.push_back(i);
+	}
 }
 
 void PagingAllocator::initialize(size_t maxMem, size_t frameSize) {
@@ -21,6 +23,10 @@ PagingAllocator* PagingAllocator::getInstance() {
 	return sharedAllocator;
 }
 
-void* allocate(size_t size) {
+void* PagingAllocator::allocate(size_t size) {
+
+}
+
+void PagingAllocator::deallocate(void* ptr) {
 
 }
