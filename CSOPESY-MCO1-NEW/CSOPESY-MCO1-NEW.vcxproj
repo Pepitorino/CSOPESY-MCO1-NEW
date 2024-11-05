@@ -31,7 +31,9 @@
     <ClInclude Include="AScheduler.h" />
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="CPUSerf.h" />
+    <ClInclude Include="FFMemoryAllocator.h" />
     <ClInclude Include="ICommand.h" />
+    <ClInclude Include="IMemoryAllocator.h" />
     <ClInclude Include="MainConsole.h" />
     <ClInclude Include="PrintCommand.h" />
     <ClInclude Include="Process.h" />
@@ -47,7 +49,9 @@
     <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="ConsoleManager_Process.cpp" />
     <ClCompile Include="CPUSerf.cpp" />
+    <ClCompile Include="FFMemoryAllocator.cpp" />
     <ClCompile Include="ICommand.cpp" />
+    <ClCompile Include="IMemoryAllocator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainConsole.cpp" />
     <ClCompile Include="PrintCommand.cpp" />
@@ -61,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
