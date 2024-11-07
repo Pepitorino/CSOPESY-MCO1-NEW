@@ -27,6 +27,7 @@ public:
 	int getProcessProgress();
 	int getLines();
 	int getCpuCoreId();
+	int getMemorySize();
 
 	//for ConsoleManager
 	std::tuple<String, String, String, int, int> HoldapTo();
@@ -37,6 +38,8 @@ private:
 	String processName;
 	int pid;
 	int cpuCoreId; //siguro this is to determine sino yung last CPU na naghandle sa process
+
+	int MemorySize;
 
 	int processProgress; // to be checked by CPUSerf to determine until when (commandList.size) to run the process
 	//sidenote: All ICommands do not have any idea that they have been processed, only the processProgress, when beyond any

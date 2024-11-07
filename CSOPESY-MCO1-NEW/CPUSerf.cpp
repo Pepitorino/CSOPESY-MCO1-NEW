@@ -81,6 +81,7 @@ void CPUSerf::WorkProcess() {
 		CPUCyclesCounter = 0;
 	}
 	else if (CPUCyclesCounter == RRLimit) {
+		PagingAllocator::getInstance()->visualizeMemory2(this->coreId, this->CPUCycles);
 		this->process->setState(Process::WAITING);
 		this->process = nullptr;
 		CPUCyclesCounter = 0;
@@ -102,11 +103,11 @@ void CPUSerf::run() {
 			//this means that the process is in another core that is running
 			std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 			std::unique_lock<std::shared_mutex> lockprocess(this->process->processMutex);
-			if (this->process->getState() == Process::FINISHED) {
-				this->process = nullptr;
-				CPUCyclesCounter = 0;
-			}
-			else if (this->process->getState() == Process::RUNNING && (this->process->getCpuCoreId() != this->coreId)) this->process = nullptr;
+			//if (this->process->getState() == Process::FINISHED) {
+			//	this->process = nullptr;
+			//	CPUCyclesCounter = 0;
+			//}
+			if (this->process->getState() == Process::RUNNING && (this->process->getCpuCoreId() != this->coreId)) this->process = nullptr;
 			else this->WorkProcess();
 			//either FCFS or RR, keep them RUNNING
 		}

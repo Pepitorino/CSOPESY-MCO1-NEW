@@ -13,6 +13,8 @@ Process::Process(String name, int instructions) {
 	this->ProcessOutputs = {};
 	this->timemade = time(0);
 
+	this->MemorySize = 4096;
+
 	//initialize commandList
 	for (int i = 0; i < instructions; i++) {
 		this->commandList.push_back(std::make_shared<PrintCommand>("Hello World from Process " + name));
@@ -132,4 +134,8 @@ int Process::getLines() {
 int Process::getCpuCoreId()
 {
 	return this->cpuCoreId;
+}
+
+int Process::getMemorySize() {
+	return this->MemorySize;
 }

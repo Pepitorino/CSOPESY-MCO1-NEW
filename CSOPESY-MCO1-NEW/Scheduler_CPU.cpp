@@ -32,7 +32,7 @@ void Scheduler::hireCPUSerfs(int cores) {
 }
 
 //to be called by CPUs whenever they're ready to take in a new process
-bool Scheduler::CPUProcessRequest(int CPUid) {
+void Scheduler::CPUProcessRequest(int CPUid) {
 	//use lock_guard to lock the mutex
 	if (running) {
 		std::lock_guard<std::mutex> lock(processQueueMutex);
@@ -42,19 +42,31 @@ bool Scheduler::CPUProcessRequest(int CPUid) {
 		//check if processQueue is empty
 		if (processQueue.empty()) {
 			SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
-			return false;
+			return;
 		}
 		//if not empty, get the front process
 		Process_ToGive = processQueue.front();
 		//pop the process from the processQueue
 		processQueue.pop();
-		//give the process to the CPUSerf
-		SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
-		
-		return true;
-		//auto unlock mutex when lock_guard goes out of scope
+
+		// check if the process is in memory, then pass to CPUSerf
+		if (PagingAllocator::getInstance()->IsProcessInMemory(Process_ToGive->getPid())) {
+			//give the process to the CPUSerf
+			SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+		}
+		//if process is not in memory, check if there is enough memory to allocate
+
+		else {
+			if (PagingAllocator::getInstance()->IsMemoryAvailable(Process_ToGive->getMemorySize())) {
+				//if not in memory, add to memory
+				PagingAllocator::getInstance()->allocate2(Process_ToGive->getPid(), Process_ToGive->getMemorySize());
+			}
+			else {
+				//if not enough memory, add the process back to the processQueue (no backing store yet)
+				processQueue.push(Process_ToGive);
+			}
+		}
 	}
-	return false;
 }
 
 //to be called when shutting down
