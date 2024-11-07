@@ -41,15 +41,16 @@ bool Scheduler::CPUProcessRequest(int CPUid) {
 
 		//check if processQueue is empty
 		if (processQueue.empty()) {
-			if (SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid) != nullptr) SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+			SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
 			return false;
 		}
 		//if not empty, get the front process
 		Process_ToGive = processQueue.front();
-		//give the process to the CPUSerf
-		SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
 		//pop the process from the processQueue
 		processQueue.pop();
+		//give the process to the CPUSerf
+		SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+		
 		return true;
 		//auto unlock mutex when lock_guard goes out of scope
 	}

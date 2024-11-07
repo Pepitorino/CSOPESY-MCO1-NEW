@@ -2,6 +2,7 @@
 #include "ProcessCommandOutput.h"
 #include "Scheduler.h"
 #include "ConsoleManager.h"
+#include "PagingAllocator.h"
 
 CPUSerf::CPUSerf(int coreId, int RRLimit, uint32_t delay) : ThreadClass() {
 	this->coreId = coreId;
@@ -42,13 +43,7 @@ void CPUSerf::ProcessWaitAndGet() {
 	// run() function of the CPUSerf running until a process is obtained.
 
 	std::lock_guard<std::mutex> lock(CPUMutex);
-	//call CPUProcessRequest(this->coreId) from Scheduler
-	bool waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
-	while (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
-		CPUWaittime++;
-		CPUCycles++;
-		waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
-	};
+	Scheduler::getInstance()->CPUProcessRequest(this->coreId);
 }
 
 void CPUSerf::WorkProcess() {
@@ -81,6 +76,7 @@ void CPUSerf::WorkProcess() {
 
 	//this is after CommandExecuted, so we can check if process is finished
 	if (this->process->getState() == Process::FINISHED) {
+		PagingAllocator::getInstance()->deallocate2(this->process->getPid());
 		this->process = nullptr;
 		CPUCyclesCounter = 0;
 	}
@@ -97,8 +93,10 @@ void CPUSerf::run() {
 	while (SerfisRunning) {
 		if (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
 			this->ProcessWaitAndGet();
-			//CPUWaittime++;
-			//CPUCycles++;
+			if (this->process == nullptr) {
+				CPUWaittime++;
+				CPUCycles++;
+			}
 		}
 		else if (this->process != nullptr && ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
 			//this means that the process is in another core that is running
