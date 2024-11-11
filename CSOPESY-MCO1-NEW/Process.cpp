@@ -133,3 +133,7 @@ int Process::getCpuCoreId()
 {
 	return this->cpuCoreId;
 }
+
+int Process::getMemorySize() {
+	return this->memorySize;
+}
