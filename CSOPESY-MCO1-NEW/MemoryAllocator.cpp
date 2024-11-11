@@ -45,7 +45,6 @@ MemoryAllocator* MemoryAllocator::getInstance() {
 //-1 for false;
 //use numFrames == -1 for FlatAllocator
 int MemoryAllocator::IsMemoryAvailable(size_t size, int numFrames) {
-	std::unique_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		for (size_t i = 0; i < this->freeList.size(); i++) {
 			std::tuple<int, int> freeMem = this->freeList[i];
