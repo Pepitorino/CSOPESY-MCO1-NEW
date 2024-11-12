@@ -46,8 +46,6 @@ void Scheduler::CPUProcessRequest(int CPUid) {
 		}
 		//if not empty, get the front process
 		Process_ToGive = processQueue.front();
-		//give the process to the CPUSerf
-		SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
 		//pop the process from the processQueue
 		processQueue.pop();
 		if (MemoryAllocator::getInstance()->IsProcessInMemory(Process_ToGive->getPid())) {
@@ -56,9 +54,10 @@ void Scheduler::CPUProcessRequest(int CPUid) {
 		}
 		//if process is not in memory, check if there is enough memory to allocate
 		else {
-			if (MemoryAllocator::getInstance()->IsMemoryAvailable(Process_ToGive->getMemorySize(), -1)) {
+			if (MemoryAllocator::getInstance()->IsMemoryAvailable(Process_ToGive->getMemorySize(), -1) >= 0) {
 				//if not in memory, add to memory
 				MemoryAllocator::getInstance()->allocate(Process_ToGive->getPid(), Process_ToGive->getMemorySize());
+				SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
 			}
 			else {
 				//if not enough memory, add the process back to the processQueue (no backing store yet)

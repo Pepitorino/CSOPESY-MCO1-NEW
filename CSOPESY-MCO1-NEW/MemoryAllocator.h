@@ -7,8 +7,8 @@ public:
         FLAT,
         PAGING
     };
-    static void initialize(size_t maxMem, size_t frameSize);
-    void initializeMemory();
+    static void initialize();
+    static void initializeMemory(size_t maxMem, size_t frameSize);
     static void destroy();
     static MemoryAllocator* getInstance();
 
@@ -16,13 +16,12 @@ public:
                                                         //returns 0 for paging allocator if its true
     boolean IsProcessInMemory(int pid);
 
-    void allocate(size_t size, int pid);
+    void allocate(int pid, size_t size);
     void deallocate(int pid);
     void mergeFlatMemory();
 
     static std::shared_mutex memoryMutex;
 private:
-    MemoryAllocator(size_t maxMem, size_t frameSize);
     MemoryAllocator();
     ~MemoryAllocator() = default;
     MemoryAllocator(MemoryAllocator const&) {}; //copy constructor is private
@@ -38,8 +37,8 @@ private:
 
     //flat allocator
     std::vector<int> flatMemory; //-1 if no pid is there, each element represents a byte
-    std::vector<std::tuple<int, int, int>> occupiedMemory; //pid, beginning of pid memory, end of pid memory
-    std::vector<std::tuple<int, int>> freeList; //starting address, ending address of free contiguous memory, updated upon deallocating
+    std::vector<std::tuple<int, size_t, size_t>> occupiedMemory; //pid, beginning of pid memory, end of pid memory
+    std::vector<std::tuple<size_t, size_t>> freeList; //starting address, ending address of free contiguous memory, updated upon deallocating
                                                 //used to find free address faster
 
     //paging allocator

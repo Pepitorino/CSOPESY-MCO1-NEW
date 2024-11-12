@@ -14,7 +14,7 @@ public:
 		FINISHED
 	};
 
-	Process(String name, int instructions);
+	Process(String name, int instructions, size_t memorySize);
 	void CommandExecuted(int RanbyCPUID); //increases process progress, and changes state to finished if finished
 	std::shared_ptr<ICommand> getNextCommand();
 	void setState(process_state state);
@@ -27,7 +27,7 @@ public:
 	int getProcessProgress();
 	int getLines();
 	int getCpuCoreId();
-	int getMemorySize();
+	size_t getMemorySize();
 
 	//for ConsoleManager
 	std::tuple<String, String, String, int, int> HoldapTo();
@@ -39,7 +39,7 @@ private:
 	int pid;
 	int cpuCoreId; //siguro this is to determine sino yung last CPU na naghandle sa process
 
-	int memorySize;
+	size_t memorySize;
 
 	int processProgress; // to be checked by CPUSerf to determine until when (commandList.size) to run the process
 	//sidenote: All ICommands do not have any idea that they have been processed, only the processProgress, when beyond any

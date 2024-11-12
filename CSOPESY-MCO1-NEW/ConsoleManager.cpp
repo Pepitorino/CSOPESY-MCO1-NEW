@@ -25,6 +25,7 @@ void ConsoleManager::initProgram() {
 		int cores;
 		Scheduler::SchedulingAlgo schedulingAlgo;
 		uint32_t quantumCycles, batchProcessFreq, minIns, maxIns, delays;
+		size_t maxMem, memPerFrame, minMemPerProc, maxMemPerProc;
 
 		// Read specific lines of the config file
 		std::string temp;
@@ -78,8 +79,22 @@ void ConsoleManager::initProgram() {
 		settings >> temp >> delays;
 		if (temp != "delay-per-exec") throw std::runtime_error("Error: Expected 'delay-per-exec'");
 
+		settings >> temp >> maxMem;
+		if (temp != "max-overall-mem") throw std::runtime_error("Error: Expected 'max-overall-mem'");
+
+		settings >> temp >> memPerFrame;
+		if (temp != "mem-per-frame") throw std::runtime_error("Error: Expected 'mem-per-frame'");
+
+		settings >> temp >> minMemPerProc;
+		if (temp != "min-mem-per-proc") throw std::runtime_error("Error: Expected 'min-mem-per-proc'");
+		sharedInstance->minMemPerProc = minMemPerProc;
+
+		settings >> temp >> maxMemPerProc;
+		if (temp != "max-mem-per-proc") throw std::runtime_error("Error: Expected 'max-mem-per-proc'");
+		sharedInstance->maxMemPerProc = maxMemPerProc;
 
 		Scheduler::initScheduler(cores, schedulingAlgo, quantumCycles, batchProcessFreq, minIns, maxIns, delays);
+		MemoryAllocator::initializeMemory(maxMem, maxMem);
 	}
 	sharedInstance->initialized = true;
 }

@@ -3,34 +3,35 @@
 MemoryAllocator* MemoryAllocator::sharedAllocator = nullptr;
 std::shared_mutex MemoryAllocator::memoryMutex;
 
-MemoryAllocator::MemoryAllocator(size_t maxMem, size_t frameSize){
-	this->maxMem = maxMem; //since maxMem is 16384, it's 16KB
-	this->frameSize = frameSize;
-	this->numFrames = maxMem / frameSize;
-	this->visualizeCounter = 0;
+MemoryAllocator::MemoryAllocator(){
+	
 }
 
-void MemoryAllocator::initialize(size_t maxMem, size_t frameSize) {
-	sharedAllocator = new MemoryAllocator(maxMem, frameSize);
+void MemoryAllocator::initialize() {
+	sharedAllocator = new MemoryAllocator();
 }
 
-void MemoryAllocator::initializeMemory() {
-	if (numFrames <= 1) {
-		this->allocator = MemoryAllocator::ALLOCATOR_TYPE::FLAT;
-		for (int i = 0; i < this->maxMem; i++) { //one element per byte
+void MemoryAllocator::initializeMemory(size_t maxMem, size_t frameSize) {
+	sharedAllocator->maxMem = maxMem; //since maxMem is 16384, it's 16KB
+	sharedAllocator->frameSize = frameSize;
+	sharedAllocator->numFrames = maxMem / frameSize;
+	sharedAllocator->visualizeCounter = 0;
+	if (sharedAllocator->numFrames <= 1) {
+		sharedAllocator->allocator = MemoryAllocator::ALLOCATOR_TYPE::FLAT;
+		for (int i = 0; i < sharedAllocator->maxMem; i++) { //one element per byte
 			int x = -1; //if -1, that means its free
-			this->flatMemory.push_back(x);
+			sharedAllocator->flatMemory.push_back(x);
 		}
-		this->freeList.push_back(std::make_tuple(0,this->maxMem-1)); //the first contiguous memory is just the whole sapce, so from 0 to the maxMemory
+		sharedAllocator->freeList.push_back(std::make_tuple(0,sharedAllocator->maxMem-1)); //the first contiguous memory is just the whole sapce, so from 0 to the maxMemory
 	}
 	else {
-		this->allocator = MemoryAllocator::ALLOCATOR_TYPE::PAGING;
-		for (int i = 0; i < this->numFrames; i++) {
+		sharedAllocator->allocator = MemoryAllocator::ALLOCATOR_TYPE::PAGING;
+		for (int i = 0; i < sharedAllocator->numFrames; i++) {
 			int frame = frameSize;
-			this->freeFrameList.push_back(frameSize);
-			this->frameMap[i] = -1;
+			sharedAllocator->freeFrameList.push_back(frameSize);
+			sharedAllocator->frameMap[i] = -1;
 		}
-		this->numFreeFrames = this->numFrames;
+		sharedAllocator->numFreeFrames = sharedAllocator->numFrames;
 	}
 }
 
@@ -47,7 +48,7 @@ MemoryAllocator* MemoryAllocator::getInstance() {
 int MemoryAllocator::IsMemoryAvailable(size_t size, int numFrames) {
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		for (size_t i = 0; i < this->freeList.size(); i++) {
-			std::tuple<int, int> freeMem = this->freeList[i];
+			std::tuple<size_t, size_t> freeMem = this->freeList[i];
 			if (std::get<1>(freeMem) - std::get<0>(freeMem) >= size) {
 				return std::get<0>(freeMem);
 			}
@@ -73,7 +74,7 @@ boolean MemoryAllocator::IsProcessInMemory(int pid) {
 	return false;
 }
 
-void MemoryAllocator::allocate(size_t size, int pid) {
+void MemoryAllocator::allocate(int pid, size_t size) {
 	std::unique_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		//check if theres memory available
@@ -83,9 +84,9 @@ void MemoryAllocator::allocate(size_t size, int pid) {
 			//look for it in the freeList, and just add the size to the starting index in the freeList
 			//ex. if we add the first process, and it takes 200 bytes, the initial freeList of (0, maxMem-1) becomes
 			//(200,maxMem-1) since 0-199 are now being used by the first process
-			for (auto t : this->freeList) {
-				if (std::get<0>(t) == (int)index) {
-					std::get<0>(t) = (int)(index + size);
+			for (auto& t : this->freeList) {
+				if (std::get<0>(t) == index) {
+					std::get<0>(t) = (index + size);
 				}
 			}
 			//occupiedMemory, we just push back the pid, the starting address, and ending address
@@ -110,6 +111,7 @@ void MemoryAllocator::deallocate(int pid) {
 				startIndex = std::get<1>(this->occupiedMemory[i]);
 				endIndex = std::get<2>(this->occupiedMemory[i]);
 				this->occupiedMemory.erase(occupiedMemory.begin() + i);
+				break;
 			}
 		}
 		//set it all to -1 (free memory)

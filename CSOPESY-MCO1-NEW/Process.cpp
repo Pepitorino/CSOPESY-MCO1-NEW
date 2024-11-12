@@ -3,7 +3,7 @@
 #include "PrintCommand.h"
 
 //only called in MainConsole whenever there is a successful checking of non-existing process inquired.
-Process::Process(String name, int instructions) {
+Process::Process(String name, int instructions, size_t memorySize) {
 	std::unique_lock<std::shared_mutex> lock(processMutex);
 	this->processName = name;
 	this->pid = ConsoleManager::getInstance()->countNumberProcesses();
@@ -12,6 +12,7 @@ Process::Process(String name, int instructions) {
 	this->state = process_state::WAITING;
 	this->ProcessOutputs = {};
 	this->timemade = time(0);
+	this->memorySize = memorySize;
 
 	//initialize commandList
 	for (int i = 0; i < instructions; i++) {
@@ -134,6 +135,6 @@ int Process::getCpuCoreId()
 	return this->cpuCoreId;
 }
 
-int Process::getMemorySize() {
+size_t Process::getMemorySize() {
 	return this->memorySize;
 }

@@ -1,6 +1,7 @@
 #include "TypeDefRepo.h"
 #include "ConsoleManager.h"
 #include "Scheduler.h"
+#include "MemoryAllocator.h"
 
 int main() {
 	srand(time(NULL));
@@ -9,6 +10,7 @@ int main() {
 
 	ConsoleManager::initialize();
 	Scheduler::initialize();
+	MemoryAllocator::initialize();
 
 	ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
 	Scheduler* schedulerInstance = Scheduler::getInstance();

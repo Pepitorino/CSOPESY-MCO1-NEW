@@ -83,5 +83,7 @@ private:
 	uint32_t batchProcessFreq = 0;
 	uint32_t minIns = 0;
 	uint32_t maxIns = 0;
+	size_t minMemPerProc = 0;
+	size_t maxMemPerProc = 0;
 };
 

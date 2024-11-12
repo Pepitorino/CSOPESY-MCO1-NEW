@@ -27,10 +27,12 @@ void ConsoleManager::createDummyProcess(int timeslice) {
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 	int range = this->maxIns - this->minIns;
 	int randomNum = (range) ? rand() % range + this->minIns : this->minIns;
+	size_t memRange = this->maxMemPerProc - this->minMemPerProc;
+	size_t randomMem = (range) ? rand() % memRange + this->minMemPerProc : this->minMemPerProc;
 
 	String name = "process" + std::to_string(this->countNumberProcesses());
 
-	std::shared_ptr<Process> process = std::make_shared<Process>(name, randomNum);
+	std::shared_ptr<Process> process = std::make_shared<Process>(name, randomNum, randomMem);
 
 	this->processTable.insert(std::make_pair(name, process));
 	this->ProcessOrderVector.push_back(name);
@@ -48,8 +50,10 @@ void ConsoleManager::addProcess(String process) {
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 	int range = this->maxIns - this->minIns;
 	int randomNum = (range) ? rand() % range + this->minIns : this->minIns;
+	size_t memRange = this->maxMemPerProc - this->minMemPerProc;
+	size_t randomMem = (range) ? rand() % memRange + this->minMemPerProc : this->minMemPerProc;
 
-	std::shared_ptr<Process> ptrProcess = std::make_shared<Process>(process, randomNum);
+	std::shared_ptr<Process> ptrProcess = std::make_shared<Process>(process, randomNum, randomMem);
 	this->processTable.insert(std::make_pair(process, ptrProcess));
 
 	//add to vector
