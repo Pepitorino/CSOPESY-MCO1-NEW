@@ -122,7 +122,7 @@ void MemoryAllocator::deallocate(int pid) {
 		this->freeList.push_back(std::make_tuple(startIndex, endIndex));
 		this->mergeFlatMemory();
 	}
-	else {
+	else {	
 		//paging allocator, not implemented yet
 		//idea is to set the frameMap frames to -1, then add those to freeFrameList
 	}

@@ -81,6 +81,7 @@ void CPUSerf::WorkProcess() {
 		CPUCyclesCounter = 0;
 	}
 	else if (CPUCyclesCounter == RRLimit) {
+		MemoryAllocator::getInstance()->visualizeMemory(this->coreId, this->CPUCycles);
 		this->process->setState(Process::WAITING);
 		this->process = nullptr;
 		CPUCyclesCounter = 0;
