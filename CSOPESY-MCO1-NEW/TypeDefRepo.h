@@ -20,6 +20,8 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-typedef std::string String;
+//for file system, used in Memory Allocator
+#include <sys/stat.h>
+#include <filesystem>
 
-extern std::mutex globalProcessListMutex;
+typedef std::string String;

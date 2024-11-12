@@ -33,6 +33,72 @@ void MemoryAllocator::initializeMemory(size_t maxMem, size_t frameSize) {
 		}
 		sharedAllocator->numFreeFrames = sharedAllocator->numFrames;
 	}
+
+	//check if the folder for the file output exists, if not, create it
+	if (sharedAllocator->doesFolderExist("Memory Visual Outputs")) {
+		sharedAllocator->removeFolder("Memory Visual Outputs");
+		sharedAllocator->createFolder("Memory Visual Outputs");
+	}
+	else sharedAllocator->createFolder("Memory Visual Outputs");
+
+}
+
+void MemoryAllocator::visualizeMemory(int Coreid, u_int qqCycle) {
+	std::unique_lock<std::shared_mutex> lock(memoryMutex);
+	//not implemented yet
+	//output the .txt file to the 'Memory Visual Outputs' folder
+	//file should be named 'Core(Coreid)_memory_stamp_(qqCycle).txt'
+	//get current time
+	std::vector <String> outputlines;
+	time_t now = time(0);
+	// Convert time_t to tm struct for local time
+	struct tm localTime;
+	localtime_s(&localTime, &now);
+
+	// Create a buffer to hold the formatted time string
+	char timeBuffer[80];
+	strftime(timeBuffer, sizeof(timeBuffer), "%m/%d/%Y %I:%M:%S%p", &localTime);
+	//std::cout << "Time Started: " << timeBuffer << std::endl;
+	String timeBuffer2 = timeBuffer;
+	String string_output = "Timestamp: (" + timeBuffer2 + ")";
+	outputlines.push_back(string_output);
+
+	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
+		String no_process_inmemory = "Number of processes in memory: " + std::to_string(this->occupiedMemory.size());
+		outputlines.push_back(no_process_inmemory);
+
+		//use freeList to calculate the total free memory
+		size_t totalFreeMemory = 0;
+		for (auto t : this->freeList) {
+			totalFreeMemory += std::get<1>(t) - std::get<0>(t) + 1;
+		}
+		String free_memory = "Total external fragmentation in KB: " + std::to_string(totalFreeMemory);
+		outputlines.push_back(free_memory);
+
+		String end, pid, start;
+		end = "----end---- = " + std::to_string(this->maxMem);
+		outputlines.push_back(end);
+		for (int i = this->occupiedMemory.size() - 1; i >= 0; i--) {
+			outputlines.push_back("");
+			end = std::to_string(std::get<2>(this->occupiedMemory[i]));
+			outputlines.push_back(end);
+			pid = "PID: " + std::to_string(std::get<0>(this->occupiedMemory[i]));
+			outputlines.push_back(pid);
+			start = std::to_string(std::get<1>(this->occupiedMemory[i]));
+			outputlines.push_back(start);
+		}
+		start = "----start---- = 0";
+		outputlines.push_back(start);
+	}
+	else {
+		//paging allocator, not implemented yet
+	}
+	String filename = "Memory Visual Outputs/Core" + std::to_string(Coreid) + "_memory_stamp_" + std::to_string(qqCycle) + ".txt";
+	std::ofstream file(filename);
+	for (String s : outputlines) {
+		file << s << std::endl;
+	}
+	file.close();
 }
 
 void MemoryAllocator::destroy() {
@@ -74,6 +140,12 @@ boolean MemoryAllocator::IsProcessInMemory(int pid) {
 	return false;
 }
 
+void MemoryAllocator::occupiedMemorySort() {
+	std::sort(this->occupiedMemory.begin(), this->occupiedMemory.end(), [](const std::tuple<int, size_t, size_t>& a, const std::tuple<int, size_t, size_t>& b) {
+		return std::get<1>(a) < std::get<1>(b);
+		});
+}
+
 void MemoryAllocator::allocate(int pid, size_t size) {
 	std::unique_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
@@ -92,6 +164,10 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			//occupiedMemory, we just push back the pid, the starting address, and ending address
 			//in the same example as above, we'd push_back (0, 0, 199)
 			this->occupiedMemory.push_back(std::make_tuple(pid,index,index+size-1));
+
+			//sort the occupiedMemory vector by the starting address
+			this->occupiedMemorySort();
+
 			//just sets the memory to the pid
 			for (index; index < size; index++) {
 				flatMemory[index] = pid;
@@ -148,4 +224,21 @@ void MemoryAllocator::mergeFlatMemory() {
 			}
 		}
 	}
+}
+
+bool MemoryAllocator::doesFolderExist(String folderName) {
+	struct stat info;
+	if (stat(folderName.c_str(), &info) != 0) return false;
+	else if (info.st_mode & S_IFDIR) return true;
+	else return false;
+}
+
+void MemoryAllocator::createFolder(String folderName) {
+	String command = "mkdir \"" + folderName + "\"";
+	system(command.c_str());
+}
+
+void MemoryAllocator::removeFolder(String folderName) {
+	String command = "rm -rf \"" + folderName + "\"";
+	system(command.c_str());
 }

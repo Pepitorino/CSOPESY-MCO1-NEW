@@ -1,79 +1,83 @@
-CPU Utilization: 50.00%
-Cores used: 1
-Cores available: 1
+CPU Utilization: 100.00%
+Cores used: 2
+Cores available: 0
 
 --------------------------------
 Running processes:
-process4       (11/12/2024 10:48:45AM)  Core: None     0              /5000
-process6       (11/12/2024 10:48:46AM)  Core: None     0              /5000
-process8       (11/12/2024 10:48:46AM)  Core: None     0              /5000
-process9       (11/12/2024 10:48:46AM)  Core: None     0              /5000
-process10      (11/12/2024 10:48:46AM)  Core: None     0              /5000
-process12      (11/12/2024 10:49:36AM)  Core: 1        4265           /5000
-process17      (11/12/2024 10:48:46AM)  Core: None     0              /5000
-process18      (11/12/2024 10:48:46AM)  Core: None     0              /5000
-process22      (11/12/2024 10:48:47AM)  Core: None     0              /5000
-process25      (11/12/2024 10:48:47AM)  Core: None     0              /5000
-process26      (11/12/2024 10:48:47AM)  Core: None     0              /5000
-process27      (11/12/2024 10:48:47AM)  Core: None     0              /5000
-process28      (11/12/2024 10:48:47AM)  Core: None     0              /5000
-process31      (11/12/2024 10:48:47AM)  Core: None     0              /5000
-process33      (11/12/2024 10:48:48AM)  Core: None     0              /5000
-process36      (11/12/2024 10:48:48AM)  Core: None     0              /5000
-process39      (11/12/2024 10:48:48AM)  Core: None     0              /5000
-process40      (11/12/2024 10:48:48AM)  Core: None     0              /5000
-process41      (11/12/2024 10:49:36AM)  Core: 0        485            /5000
-process42      (11/12/2024 10:48:48AM)  Core: None     0              /5000
-process44      (11/12/2024 10:48:49AM)  Core: None     0              /5000
-process47      (11/12/2024 10:48:49AM)  Core: None     0              /5000
-process48      (11/12/2024 10:48:49AM)  Core: None     0              /5000
-process51      (11/12/2024 10:48:49AM)  Core: None     0              /5000
-process55      (11/12/2024 10:48:49AM)  Core: None     0              /5000
-process56      (11/12/2024 10:48:50AM)  Core: None     0              /5000
-process60      (11/12/2024 10:48:50AM)  Core: None     0              /5000
-process65      (11/12/2024 10:48:50AM)  Core: None     0              /5000
-process66      (11/12/2024 10:48:50AM)  Core: None     0              /5000
+process4       (11/12/2024 09:23:40PM)  Core: 0        3165           /5000
+process12      (11/12/2024 09:17:33PM)  Core: None     0              /5000
+process16      (11/12/2024 09:17:34PM)  Core: None     0              /5000
+process19      (11/12/2024 09:17:34PM)  Core: None     0              /5000
+process20      (11/12/2024 09:17:34PM)  Core: None     0              /5000
+process21      (11/12/2024 09:17:34PM)  Core: None     0              /5000
+process22      (11/12/2024 09:23:40PM)  Core: 0        2300           /5000
+process36      (11/12/2024 09:17:36PM)  Core: None     0              /5000
+process40      (11/12/2024 09:17:36PM)  Core: None     0              /5000
+process45      (11/12/2024 09:17:37PM)  Core: None     0              /5000
+process46      (11/12/2024 09:17:37PM)  Core: None     0              /5000
+process48      (11/12/2024 09:17:37PM)  Core: None     0              /5000
 
 Finished processes:
-process0       (11/12/2024 10:48:46AM)  Finished       5000           /5000
-process1       (11/12/2024 10:48:46AM)  Finished       5000           /5000
-process2       (11/12/2024 10:48:46AM)  Finished       5000           /5000
-process3       (11/12/2024 10:48:47AM)  Finished       5000           /5000
-process5       (11/12/2024 10:48:48AM)  Finished       5000           /5000
-process7       (11/12/2024 10:49:26AM)  Finished       5000           /5000
-process11      (11/12/2024 10:49:06AM)  Finished       5000           /5000
-process13      (11/12/2024 10:49:13AM)  Finished       5000           /5000
-process14      (11/12/2024 10:49:09AM)  Finished       5000           /5000
-process15      (11/12/2024 10:48:50AM)  Finished       5000           /5000
-process16      (11/12/2024 10:48:55AM)  Finished       5000           /5000
-process19      (11/12/2024 10:48:53AM)  Finished       5000           /5000
-process20      (11/12/2024 10:49:32AM)  Finished       5000           /5000
-process21      (11/12/2024 10:49:04AM)  Finished       5000           /5000
-process23      (11/12/2024 10:49:18AM)  Finished       5000           /5000
-process24      (11/12/2024 10:48:50AM)  Finished       5000           /5000
-process29      (11/12/2024 10:49:25AM)  Finished       5000           /5000
-process30      (11/12/2024 10:49:23AM)  Finished       5000           /5000
-process32      (11/12/2024 10:49:20AM)  Finished       5000           /5000
-process34      (11/12/2024 10:49:34AM)  Finished       5000           /5000
-process35      (11/12/2024 10:49:34AM)  Finished       5000           /5000
-process37      (11/12/2024 10:48:58AM)  Finished       5000           /5000
-process38      (11/12/2024 10:48:53AM)  Finished       5000           /5000
-process43      (11/12/2024 10:49:29AM)  Finished       5000           /5000
-process45      (11/12/2024 10:49:17AM)  Finished       5000           /5000
-process46      (11/12/2024 10:49:15AM)  Finished       5000           /5000
-process49      (11/12/2024 10:49:24AM)  Finished       5000           /5000
-process50      (11/12/2024 10:49:07AM)  Finished       5000           /5000
-process52      (11/12/2024 10:49:01AM)  Finished       5000           /5000
-process53      (11/12/2024 10:49:10AM)  Finished       5000           /5000
-process54      (11/12/2024 10:49:31AM)  Finished       5000           /5000
-process57      (11/12/2024 10:49:28AM)  Finished       5000           /5000
-process58      (11/12/2024 10:49:02AM)  Finished       5000           /5000
-process59      (11/12/2024 10:49:12AM)  Finished       5000           /5000
-process61      (11/12/2024 10:48:56AM)  Finished       5000           /5000
-process62      (11/12/2024 10:49:36AM)  Finished       5000           /5000
-process63      (11/12/2024 10:49:04AM)  Finished       5000           /5000
-process64      (11/12/2024 10:48:59AM)  Finished       5000           /5000
-process67      (11/12/2024 10:49:15AM)  Finished       5000           /5000
-process68      (11/12/2024 10:49:21AM)  Finished       5000           /5000
+process0       (11/12/2024 09:17:40PM)  Finished       5000           /5000
+process1       (11/12/2024 09:17:41PM)  Finished       5000           /5000
+process2       (11/12/2024 09:17:43PM)  Finished       5000           /5000
+process3       (11/12/2024 09:22:12PM)  Finished       5000           /5000
+process5       (11/12/2024 09:19:26PM)  Finished       5000           /5000
+process6       (11/12/2024 09:21:12PM)  Finished       5000           /5000
+process7       (11/12/2024 09:21:49PM)  Finished       5000           /5000
+process8       (11/12/2024 09:21:23PM)  Finished       5000           /5000
+process9       (11/12/2024 09:22:25PM)  Finished       5000           /5000
+process10      (11/12/2024 09:19:54PM)  Finished       5000           /5000
+process11      (11/12/2024 09:17:55PM)  Finished       5000           /5000
+process13      (11/12/2024 09:22:34PM)  Finished       5000           /5000
+process14      (11/12/2024 09:19:14PM)  Finished       5000           /5000
+process15      (11/12/2024 09:18:37PM)  Finished       5000           /5000
+process17      (11/12/2024 09:19:40PM)  Finished       5000           /5000
+process18      (11/12/2024 09:18:49PM)  Finished       5000           /5000
+process23      (11/12/2024 09:23:02PM)  Finished       5000           /5000
+process24      (11/12/2024 09:20:40PM)  Finished       5000           /5000
+process25      (11/12/2024 09:21:36PM)  Finished       5000           /5000
+process26      (11/12/2024 09:21:01PM)  Finished       5000           /5000
+process27      (11/12/2024 09:22:50PM)  Finished       5000           /5000
+process28      (11/12/2024 09:23:31PM)  Finished       5000           /5000
+process29      (11/12/2024 09:18:23PM)  Finished       5000           /5000
+process30      (11/12/2024 09:21:25PM)  Finished       5000           /5000
+process31      (11/12/2024 09:20:48PM)  Finished       5000           /5000
+process32      (11/12/2024 09:21:38PM)  Finished       5000           /5000
+process33      (11/12/2024 09:22:01PM)  Finished       5000           /5000
+process34      (11/12/2024 09:19:51PM)  Finished       5000           /5000
+process35      (11/12/2024 09:20:28PM)  Finished       5000           /5000
+process37      (11/12/2024 09:18:10PM)  Finished       5000           /5000
+process38      (11/12/2024 09:23:18PM)  Finished       5000           /5000
+process39      (11/12/2024 09:20:16PM)  Finished       5000           /5000
+process41      (11/12/2024 09:19:16PM)  Finished       5000           /5000
+process42      (11/12/2024 09:23:34PM)  Finished       5000           /5000
+process43      (11/12/2024 09:21:04PM)  Finished       5000           /5000
+process44      (11/12/2024 09:19:29PM)  Finished       5000           /5000
+process47      (11/12/2024 09:21:14PM)  Finished       5000           /5000
+process49      (11/12/2024 09:19:03PM)  Finished       5000           /5000
+process50      (11/12/2024 09:22:10PM)  Finished       5000           /5000
+process51      (11/12/2024 09:18:20PM)  Finished       5000           /5000
+process52      (11/12/2024 09:20:04PM)  Finished       5000           /5000
+process53      (11/12/2024 09:17:57PM)  Finished       5000           /5000
+process54      (11/12/2024 09:23:08PM)  Finished       5000           /5000
+process55      (11/12/2024 09:22:37PM)  Finished       5000           /5000
+process56      (11/12/2024 09:20:37PM)  Finished       5000           /5000
+process57      (11/12/2024 09:18:08PM)  Finished       5000           /5000
+process58      (11/12/2024 09:21:59PM)  Finished       5000           /5000
+process59      (11/12/2024 09:22:21PM)  Finished       5000           /5000
+process60      (11/12/2024 09:18:47PM)  Finished       5000           /5000
+process61      (11/12/2024 09:22:59PM)  Finished       5000           /5000
+process62      (11/12/2024 09:20:51PM)  Finished       5000           /5000
+process63      (11/12/2024 09:19:00PM)  Finished       5000           /5000
+process64      (11/12/2024 09:20:18PM)  Finished       5000           /5000
+process65      (11/12/2024 09:23:11PM)  Finished       5000           /5000
+process66      (11/12/2024 09:21:47PM)  Finished       5000           /5000
+process67      (11/12/2024 09:18:34PM)  Finished       5000           /5000
+process68      (11/12/2024 09:23:21PM)  Finished       5000           /5000
+process69      (11/12/2024 09:20:26PM)  Finished       5000           /5000
+process70      (11/12/2024 09:20:07PM)  Finished       5000           /5000
+process71      (11/12/2024 09:22:47PM)  Finished       5000           /5000
+process72      (11/12/2024 09:19:38PM)  Finished       5000           /5000
 --------------------------------
 

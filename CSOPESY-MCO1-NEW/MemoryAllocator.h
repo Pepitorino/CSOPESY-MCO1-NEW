@@ -1,5 +1,6 @@
 #pragma once
 #include "TypeDefRepo.h"
+
 class MemoryAllocator
 {
 public:
@@ -19,13 +20,19 @@ public:
     void allocate(int pid, size_t size);
     void deallocate(int pid);
     void mergeFlatMemory();
-    void visualizeMemory(int pid, u_int qqCycle);
+    void visualizeMemory(int Coreid, u_int qqCycle);
 
     static std::shared_mutex memoryMutex;
 private:
     MemoryAllocator();
     ~MemoryAllocator() = default;
     MemoryAllocator(MemoryAllocator const&) {}; //copy constructor is private
+
+	bool doesFolderExist(String folderName);
+	void createFolder(String folderName);
+	void removeFolder(String folderName);
+
+    void occupiedMemorySort();
     MemoryAllocator& operator=(MemoryAllocator const&) {}; //assignment operator is private
     static MemoryAllocator* sharedAllocator;
 
