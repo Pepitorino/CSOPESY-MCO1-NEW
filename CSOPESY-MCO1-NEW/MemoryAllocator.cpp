@@ -87,6 +87,7 @@ void MemoryAllocator::visualizeMemory(int Coreid, u_int qqCycle) {
 			start = std::to_string(std::get<1>(this->occupiedMemory[i]));
 			outputlines.push_back(start);
 		}
+		outputlines.push_back("");
 		start = "----start---- = 0";
 		outputlines.push_back(start);
 	}
@@ -112,6 +113,7 @@ MemoryAllocator* MemoryAllocator::getInstance() {
 //-1 for false;
 //use numFrames == -1 for FlatAllocator
 int MemoryAllocator::IsMemoryAvailable(size_t size, int numFrames) {
+	std::shared_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		for (size_t i = 0; i < this->freeList.size(); i++) {
 			std::tuple<size_t, size_t> freeMem = this->freeList[i];
@@ -127,6 +129,7 @@ int MemoryAllocator::IsMemoryAvailable(size_t size, int numFrames) {
 }
 
 boolean MemoryAllocator::IsProcessInMemory(int pid) {
+	std::shared_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		for (auto t : this->occupiedMemory) {
 			if (std::get<0>(t) == pid) return true;
@@ -147,7 +150,7 @@ void MemoryAllocator::occupiedMemorySort() {
 }
 
 void MemoryAllocator::allocate(int pid, size_t size) {
-	std::unique_lock<std::shared_mutex> lock(memoryMutex);
+	std::shared_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		//check if theres memory available
 		size_t index = this->IsMemoryAvailable(size, -1);
@@ -177,7 +180,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 }
 
 void MemoryAllocator::deallocate(int pid) {
-	std::unique_lock<std::shared_mutex> lock(memoryMutex);
+	std::shared_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		int startIndex = -1;
 		int endIndex = -1;
