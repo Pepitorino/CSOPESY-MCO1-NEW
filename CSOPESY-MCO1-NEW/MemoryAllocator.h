@@ -50,8 +50,9 @@ private:
                                                 //used to find free address faster
 
     //paging allocator
-    std::vector<int> freeFrameList;
+    std::deque<int> freeFrameList; //index of free frame on frameMap
     std::unordered_map<int, int> frameMap; //frame, pid 
     size_t numFreeFrames;
+    std::unordered_map<int, std::vector<int>> pidFrames; //pid, [frames taken]
 };
 

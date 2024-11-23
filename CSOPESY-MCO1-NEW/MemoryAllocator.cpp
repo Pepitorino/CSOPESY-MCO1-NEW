@@ -27,8 +27,7 @@ void MemoryAllocator::initializeMemory(size_t maxMem, size_t frameSize) {
 	else {
 		sharedAllocator->allocator = MemoryAllocator::ALLOCATOR_TYPE::PAGING;
 		for (int i = 0; i < sharedAllocator->numFrames; i++) {
-			int frame = frameSize;
-			sharedAllocator->freeFrameList.push_back(frameSize);
+			sharedAllocator->freeFrameList.push_back(i);
 			sharedAllocator->frameMap[i] = -1;
 		}
 		sharedAllocator->numFreeFrames = sharedAllocator->numFrames;
@@ -117,7 +116,8 @@ int MemoryAllocator::IsMemoryAvailable(size_t size, int numFrames) {
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		for (size_t i = 0; i < this->freeList.size(); i++) {
 			std::tuple<size_t, size_t> freeMem = this->freeList[i];
-			if (std::get<1>(freeMem) - std::get<0>(freeMem) >= size) {
+			if (std::get<0>(freeMem) >= this->maxMem) return -1;
+			if (std::get<1>(freeMem) - std::get<0>(freeMem) >= size-1) {
 				return std::get<0>(freeMem);
 			}
 		}
@@ -136,8 +136,8 @@ boolean MemoryAllocator::IsProcessInMemory(int pid) {
 		}
 	}
 	else {
-		for (auto x : this->frameMap) {
-			if (x.second == pid) return true;
+		for (auto x : this->pidFrames) {
+			if (x.first == pid) return true;
 		}
 	}
 	return false;
@@ -177,6 +177,19 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			}
 		}
 	}
+	else {
+		size_t numFrames = (size + 1) / this->frameSize;
+		if (!(this->IsMemoryAvailable(size, numFrames))) {
+			std::vector<int> framesUsed;
+			for (int i = 0; i < numFrames; i++) {
+				int freeFrame = this->freeFrameList.front();
+				this->freeFrameList.pop_front();
+				this->frameMap[freeFrame] = pid;
+				framesUsed.push_back(freeFrame);
+			}
+			this->pidFrames[pid] = framesUsed;
+		}
+	}
 }
 
 void MemoryAllocator::deallocate(int pid) {
@@ -202,6 +215,12 @@ void MemoryAllocator::deallocate(int pid) {
 		this->mergeFlatMemory();
 	}
 	else {	
+		std::vector<int> numFrames = this->pidFrames[pid];
+		this->pidFrames.erase(pid);
+		for (int i = 0; i < numFrames.size(); i++) {
+			frameMap[numFrames[i]] = -1;
+			this->freeFrameList.push_back(numFrames[i]);
+		}
 		//paging allocator, not implemented yet
 		//idea is to set the frameMap frames to -1, then add those to freeFrameList
 	}
@@ -211,9 +230,9 @@ void MemoryAllocator::mergeFlatMemory() {
 	//basically just changes the start to the end or vice versa type beat
 	for (int i = 0; i < this->freeList.size(); i++) {
 		for (int j = i+1; j < this->freeList.size(); j++) {
-			int start1 = std::get<0>(freeList[i]),
+			size_t start1 = std::get<0>(freeList[i]),
 				end1 = std::get<1>(freeList[i]);
-			int start2 = std::get<0>(freeList[j]),
+			size_t start2 = std::get<0>(freeList[j]),
 				end2 = std::get<1>(freeList[j]);
 			if (end1 == start2-1) {
 				std::get<1>(freeList[i]) = end2; //end1 = end2
