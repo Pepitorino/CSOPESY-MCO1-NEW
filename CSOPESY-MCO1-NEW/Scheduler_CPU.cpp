@@ -54,7 +54,7 @@ void Scheduler::CPUProcessRequest(int CPUid) {
 		}
 		//if process is not in memory, check if there is enough memory to allocate
 		else {
-			if (MemoryAllocator::getInstance()->IsMemoryAvailable(Process_ToGive->getMemorySize(), -1) >= 0) {
+			if (MemoryAllocator::getInstance()->IsMemoryAvailable(Process_ToGive->getMemorySize()) >= 0) {
 				//if not in memory, add to memory
 				MemoryAllocator::getInstance()->allocate(Process_ToGive->getPid(), Process_ToGive->getMemorySize());
 				SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);

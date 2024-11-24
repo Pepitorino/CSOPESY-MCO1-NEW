@@ -94,7 +94,7 @@ void ConsoleManager::initProgram() {
 		sharedInstance->maxMemPerProc = maxMemPerProc;
 
 		Scheduler::initScheduler(cores, schedulingAlgo, quantumCycles, batchProcessFreq, minIns, maxIns, delays);
-		MemoryAllocator::initializeMemory(maxMem, maxMem);
+		MemoryAllocator::initializeMemory(maxMem, memPerFrame);
 	}
 	sharedInstance->initialized = true;
 }

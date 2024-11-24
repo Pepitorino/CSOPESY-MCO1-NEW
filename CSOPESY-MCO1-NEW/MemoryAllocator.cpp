@@ -111,19 +111,23 @@ MemoryAllocator* MemoryAllocator::getInstance() {
 
 //-1 for false;
 //use numFrames == -1 for FlatAllocator
-int MemoryAllocator::IsMemoryAvailable(size_t size, int numFrames) {
+int MemoryAllocator::IsMemoryAvailable(size_t size) {
 	std::shared_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		for (size_t i = 0; i < this->freeList.size(); i++) {
+			if (std::get<0>(this->freeList[i]) >= std::get<1>(this->freeList[i])) {
+				this->freeList.erase(this->freeList.begin() + i);
+				if (i >= this->freeList.size()) return -1;
+			}
 			std::tuple<size_t, size_t> freeMem = this->freeList[i];
-			if (std::get<0>(freeMem) >= this->maxMem) return -1;
 			if (std::get<1>(freeMem) - std::get<0>(freeMem) >= size-1) {
 				return std::get<0>(freeMem);
 			}
 		}
 	}
 	else {
-		if (this->numFreeFrames < numFrames) return 0;
+		int freeFrames = size / this->frameSize;
+		if (this->numFreeFrames >= freeFrames) return 0;
 	}
 	return -1;
 }
@@ -153,7 +157,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 	std::shared_lock<std::shared_mutex> lock(memoryMutex);
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		//check if theres memory available
-		size_t index = this->IsMemoryAvailable(size, -1);
+		size_t index = this->IsMemoryAvailable(size);
 		//if there is, remove that memory from the freeList, set it in flatMemory, and add it to occupiedMemory
 		if (index >= 0) {
 			//look for it in the freeList, and just add the size to the starting index in the freeList
@@ -179,7 +183,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 	}
 	else {
 		size_t numFrames = (size + 1) / this->frameSize;
-		if (!(this->IsMemoryAvailable(size, numFrames))) {
+		if (!(this->IsMemoryAvailable(size))) {
 			std::vector<int> framesUsed;
 			for (int i = 0; i < numFrames; i++) {
 				int freeFrame = this->freeFrameList.front();
@@ -188,6 +192,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 				framesUsed.push_back(freeFrame);
 			}
 			this->pidFrames[pid] = framesUsed;
+			this->numFreeFrames -= framesUsed.size();
 		}
 	}
 }
@@ -221,6 +226,7 @@ void MemoryAllocator::deallocate(int pid) {
 			frameMap[numFrames[i]] = -1;
 			this->freeFrameList.push_back(numFrames[i]);
 		}
+		this->numFreeFrames += numFrames.size();
 		//paging allocator, not implemented yet
 		//idea is to set the frameMap frames to -1, then add those to freeFrameList
 	}

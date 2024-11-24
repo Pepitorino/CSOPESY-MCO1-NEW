@@ -13,8 +13,7 @@ public:
     static void destroy();
     static MemoryAllocator* getInstance();
 
-    int IsMemoryAvailable(size_t size, int numFrames);  //numFrames should be -1 if flat allocator
-                                                        //returns 0 for paging allocator if its true
+    int IsMemoryAvailable(size_t size); //returns 0 for paging allocator if its true
     boolean IsProcessInMemory(int pid);
 
     void allocate(int pid, size_t size);

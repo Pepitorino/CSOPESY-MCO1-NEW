@@ -1,9 +1,0 @@
-Timestamp: (11/12/2024 09:58:50PM)
-Number of processes in memory: 1
-Total external fragmentation in KB: 12288
-----end---- = 16384
-
-4095
-PID: 61
-0
-----start---- = 0
