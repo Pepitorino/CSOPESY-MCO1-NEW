@@ -9,9 +9,13 @@
 // <--- [for ConsoleManager] --->
 //used std::tuple instead of int* for automatic deallocation
 // std::tuple<> is destroyed out of scope
+// CPUs are locked at this point by ConsoleManager
 std::tuple<float, int, int> Scheduler::findCoresUsed() {
 	int numCores = cpuList.size();
 	int coresUsed = 0;
+
+	//check how many cores are used (aka checking which have processes)
+
 	for (int i = 0; i < cpuList.size(); i++) 
 		if (cpuList.at(i)->hasProcess()) coresUsed++;
 	
@@ -20,6 +24,11 @@ std::tuple<float, int, int> Scheduler::findCoresUsed() {
 	numCores = numCores - coresUsed; //cores available
 
 	return std::make_tuple(CPUUsePercent, coresUsed, numCores);
+}
+
+// give cpuList to ConsoleManager
+std::vector<std::shared_ptr<CPUSerf>> Scheduler::giveCPUs() {
+	return this->cpuList;
 }
 
 // <--- [for CPUs] --->

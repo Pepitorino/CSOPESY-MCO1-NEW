@@ -42,7 +42,7 @@ void MemoryAllocator::initializeMemory(size_t maxMem, size_t frameSize) {
 
 }
 
-void MemoryAllocator::visualizeMemory(int Coreid, u_int qqCycle) {
+void MemoryAllocator::visualizeMemory(u_int qqCycle) {
 	std::unique_lock<std::shared_mutex> lock(memoryMutex);
 	//not implemented yet
 	//output the .txt file to the 'Memory Visual Outputs' folder
@@ -93,7 +93,7 @@ void MemoryAllocator::visualizeMemory(int Coreid, u_int qqCycle) {
 	else {
 		//paging allocator, not implemented yet
 	}
-	String filename = "Memory Visual Outputs/Core" + std::to_string(Coreid) + "_memory_stamp_" + std::to_string(qqCycle) + ".txt";
+	String filename = "Memory Visual Outputs/memory_stamp_" + std::to_string(qqCycle) + ".txt";
 	std::ofstream file(filename);
 	for (String s : outputlines) {
 		file << s << std::endl;

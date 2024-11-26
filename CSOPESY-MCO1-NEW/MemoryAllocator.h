@@ -19,7 +19,7 @@ public:
     void allocate(int pid, size_t size);
     void deallocate(int pid);
     void mergeFlatMemory();
-    void visualizeMemory(int Coreid, u_int qqCycle);
+    void visualizeMemory(u_int qqCycle);
 
     static std::shared_mutex memoryMutex;
 private:

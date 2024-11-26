@@ -28,6 +28,7 @@ public:
 	void shutdown();
 	void run();
 	std::tuple<float, int, int> findCoresUsed();
+	std::vector<std::shared_ptr<CPUSerf>> giveCPUs();
 
 private:
 

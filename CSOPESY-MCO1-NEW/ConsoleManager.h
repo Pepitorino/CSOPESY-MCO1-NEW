@@ -53,7 +53,7 @@ private:
 	static ConsoleManager* sharedInstance;
 
 	//for obtaining process details
-	String ProcessDetailsFormatter(std::tuple<String, String, String, int, int> ProcessDetails);
+	String ProcessDetailsFormatter(std::tuple<String, String, String, int, int, Process::process_state> ProcessDetails);
 	String StringShortener(String processName, int width);
 	
 	

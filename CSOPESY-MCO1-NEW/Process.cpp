@@ -74,7 +74,7 @@ void Process::CommandExecuted(int RanbyCPUID) {
 //void Process::print() {}
 
 // for ConsoleManager
-std::tuple<String, String, String, int, int> Process::HoldapTo() {
+std::tuple<String, String, String, int, int, Process::process_state> Process::HoldapTo() {
 	// name, time of last command exc or time made (if no command executed), last core run on, current line code, size of commandList
 	// this->processName
 	String time = "";
@@ -111,7 +111,7 @@ std::tuple<String, String, String, int, int> Process::HoldapTo() {
 	//this->processProgress
 	int NumberOfCommands = this->commandList.size();
 
-	return std::make_tuple(this->processName, time, core, this->processProgress, NumberOfCommands);
+	return std::make_tuple(this->processName, time, core, this->processProgress, NumberOfCommands, this->state);
 }
 
 String Process::getName() {

@@ -19,6 +19,8 @@ public:
 	void fireSerf(); //to be called by Scheduler when closing the program
 	bool hasProcess(); //{ return process != nullptr; }
 
+	std::mutex CPUMutex;
+
 private:
 
 	//bool GoSignalFromScheduler = false; //if we're gonna be doing Threaded, we can include the tick() in an overrun run() function of the CPUSerf
@@ -36,6 +38,5 @@ private:
 	uint32_t CPUCycles, CPUWaittime, delay; // needed pa ba this?
 	int CPUCyclesCounter; // for RR
 	int RRLimit; // for RR, -1 for FCFS
-	std::mutex CPUMutex;
 	// bool SerfisAvailable; //initialized true, considered not needed since we can just check if process is nullptr or finished state
 };

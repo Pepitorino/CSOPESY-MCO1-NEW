@@ -5,7 +5,7 @@
 
 int main() {
 	srand(time(NULL));
-	uint64_t timeslice = 1;
+	uint64_t timeslice = 0;
 	bool running = true;
 
 	ConsoleManager::initialize();
@@ -19,6 +19,7 @@ int main() {
 	// we have separate class for Scheduler
 
 	while (consoleManagerInstance->getRunning()) {
+		MemoryAllocator::getInstance()->visualizeMemory(timeslice);
 		consoleManagerInstance->createDummyProcess(timeslice);
 		consoleManagerInstance->tick();
 		timeslice++;

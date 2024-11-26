@@ -42,12 +42,12 @@ void CPUSerf::ProcessWaitAndGet() {
 	//to call a function in the Scheduler to get a process from the processQueue, keeps the 
 	// run() function of the CPUSerf running until a process is obtained.
 
-	std::lock_guard<std::mutex> lock(CPUMutex);
+	//std::lock_guard<std::mutex> lock(CPUMutex);
 	Scheduler::getInstance()->CPUProcessRequest(this->coreId);
 }
 
 void CPUSerf::WorkProcess() {
-	std::lock_guard<std::mutex> lock(CPUMutex);
+	//std::lock_guard<std::mutex> lock(CPUMutex);
 
 	if (delay > 0) {
 		if (CPUCycles % delay == 0) {
@@ -81,7 +81,7 @@ void CPUSerf::WorkProcess() {
 		CPUCyclesCounter = 0;
 	}
 	else if (CPUCyclesCounter == RRLimit) {
-		MemoryAllocator::getInstance()->visualizeMemory(this->coreId, this->CPUCycles);
+		//Removed: added to main.c //MemoryAllocator::getInstance()->visualizeMemory(this->coreId, this->CPUCycles);
 		this->process->setState(Process::WAITING);
 		this->process = nullptr;
 		CPUCyclesCounter = 0;
@@ -93,6 +93,7 @@ void CPUSerf::run() {
 	//this->SerfisReady = false;
 	while (SerfisRunning) {
 		if (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
+			std::unique_lock<std::mutex> lock(CPUMutex);
 			this->ProcessWaitAndGet();
 			//CPUWaittime++;
 			//CPUCycles++;
@@ -103,7 +104,8 @@ void CPUSerf::run() {
 		}
 		else if (this->process != nullptr && ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
 			//this means that the process is in another core that is running
-			std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
+			std::unique_lock<std::mutex> lock(CPUMutex);
+			//std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 			std::unique_lock<std::shared_mutex> lockprocess(this->process->processMutex);
 			//if (this->process->getState() == Process::FINISHED) {
 			//	this->process = nullptr;

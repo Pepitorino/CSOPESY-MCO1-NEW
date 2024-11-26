@@ -30,7 +30,7 @@ public:
 	size_t getMemorySize();
 
 	//for ConsoleManager
-	std::tuple<String, String, String, int, int> HoldapTo();
+	std::tuple<String, String, String, int, int, Process::process_state> HoldapTo();
 	process_state state; //to be evaluated by the scheduler
 	mutable std::shared_mutex processMutex;
 
