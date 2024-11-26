@@ -31,7 +31,7 @@ public:
 
 	//for ConsoleManager
 	std::tuple<String, String, String, int, int, Process::process_state> HoldapTo();
-	process_state state; //to be evaluated by the scheduler
+	process_state state; //to be evaluated by the scheduler, CPU, and CManager
 	mutable std::shared_mutex processMutex;
 
 private:

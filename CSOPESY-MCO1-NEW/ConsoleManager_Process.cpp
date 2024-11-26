@@ -69,14 +69,14 @@ std::vector<String> ConsoleManager::obtainProcessDetails() {
  
 	//should lock all CPUs here
 	std::vector<std::shared_ptr<CPUSerf>> cpuListCManager = Scheduler::getInstance()->giveCPUs();
-	std::vector<std::unique_lock<std::mutex>> locks;
+	std::vector<std::unique_lock<std::shared_mutex>> locks;
 	int numCPUs = cpuListCManager.size();
 	locks.reserve(numCPUs);
 
 	//lock all CPUs
-	/*for (int i = 0; i < numCPUs; i++) {
-		locks.push_back(std::unique_lock<std::mutex>(cpuListCManager.at(i)->CPUMutex));
-	}*/
+	for (int i = 0; i < numCPUs; i++) {
+		locks.push_back(std::unique_lock<std::shared_mutex>(cpuListCManager.at(i)->CPUMutex));
+	}
 
 	std::vector<String> strings;
 	//iterate through processTable by sequence of ProcessOrderVector and return a vector of strings
@@ -121,13 +121,13 @@ std::vector<String> ConsoleManager::obtainProcessDetails() {
 
 String ConsoleManager::ProcessDetailsFormatter(std::tuple <String, String, String, int, int, Process::process_state> ProcessDetails) {
 	std::ostringstream procdetailstrstream;
-	procdetailstrstream << std::left << std::setw(15) << StringShortener(std::get<0>(ProcessDetails), 15)
-						<< std::left << std::setw(25) << std::get<1>(ProcessDetails);
+	procdetailstrstream << std::left << std::setw(15) << StringShortener(std::get<0>(ProcessDetails), 15) // process name
+		<< std::left << std::setw(25) << std::get<1>(ProcessDetails); // time of last command executed (MM/DD/YYYY)
 						//check muna if complete or not (print core)
-	if (std::get<3>(ProcessDetails) == std::get<4>(ProcessDetails)) {
+	if (std::get<5>(ProcessDetails) == Process::FINISHED) {
 		procdetailstrstream << std::left << std::setw(15) << "Finished";
 	}
-	else {
+	else if (std::get<5>(ProcessDetails) == Process::RUNNING) {
 		procdetailstrstream << std::left << std::setw(15) << std::get<2>(ProcessDetails);
 	}
 

@@ -19,7 +19,7 @@ public:
 	void fireSerf(); //to be called by Scheduler when closing the program
 	bool hasProcess(); //{ return process != nullptr; }
 
-	std::mutex CPUMutex;
+	std::shared_mutex CPUMutex;
 
 private:
 

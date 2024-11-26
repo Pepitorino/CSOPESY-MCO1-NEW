@@ -93,7 +93,7 @@ void CPUSerf::run() {
 	//this->SerfisReady = false;
 	while (SerfisRunning) {
 		if (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
-			std::unique_lock<std::mutex> lock(CPUMutex);
+			std::unique_lock<std::shared_mutex> lock(CPUMutex);
 			this->ProcessWaitAndGet();
 			//CPUWaittime++;
 			//CPUCycles++;
@@ -104,7 +104,7 @@ void CPUSerf::run() {
 		}
 		else if (this->process != nullptr && ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
 			//this means that the process is in another core that is running
-			std::unique_lock<std::mutex> lock(CPUMutex);
+			std::unique_lock<std::shared_mutex> lock(CPUMutex);
 			//std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 			std::unique_lock<std::shared_mutex> lockprocess(this->process->processMutex);
 			//if (this->process->getState() == Process::FINISHED) {
