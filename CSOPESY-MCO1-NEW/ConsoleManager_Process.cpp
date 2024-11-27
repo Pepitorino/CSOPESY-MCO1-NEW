@@ -152,3 +152,7 @@ bool ConsoleManager::DoesProcessExist(String process) {
 int ConsoleManager::countNumberProcesses() {
 	return this->processTable.size();
 }
+
+std::shared_ptr<Process> ConsoleManager::getProcess(int pid) {
+	return this->Process_InOrderVector->at(pid);
+}

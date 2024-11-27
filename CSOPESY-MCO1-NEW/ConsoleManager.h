@@ -38,6 +38,7 @@ public:
 	void addProcess(String process);
 	int countNumberProcesses();
 	std::vector<String> obtainProcessDetails();
+	std::shared_ptr<Process> getProcess(int pid);
 
 	//for Scheduler
 	std::shared_ptr<std::vector<std::shared_ptr<Process>>> giveProcess_InOrderVectorToScheduler();

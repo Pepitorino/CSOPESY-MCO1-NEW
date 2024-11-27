@@ -53,5 +53,6 @@ private:
     std::unordered_map<int, int> frameMap; //frame, pid 
     size_t numFreeFrames;
     std::unordered_map<int, std::vector<int>> pidFrames; //pid, [frames taken]
+    std::vector<int> processes; //pids
 };
 

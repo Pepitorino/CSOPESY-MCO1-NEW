@@ -1,4 +1,5 @@
 #include "MemoryAllocator.h"
+#include "ConsoleManager.h"
 
 MemoryAllocator* MemoryAllocator::sharedAllocator = nullptr;
 std::shared_mutex MemoryAllocator::memoryMutex;
@@ -158,6 +159,16 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		//check if theres memory available
 		size_t index = this->IsMemoryAvailable(size);
+
+		while (this->IsMemoryAvailable(size) < 0) {
+			auto t = this->occupiedMemory.front();
+			auto p = ConsoleManager::getInstance()->getProcess(std::get<0>(t));
+			while (true) {
+				if (p->state == Process::process_state::READY) break;
+			}
+			this->deallocate(std::get<0>(t));
+		}
+
 		//if there is, remove that memory from the freeList, set it in flatMemory, and add it to occupiedMemory
 		if (index >= 0) {
 			//look for it in the freeList, and just add the size to the starting index in the freeList
@@ -170,7 +181,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			}
 			//occupiedMemory, we just push back the pid, the starting address, and ending address
 			//in the same example as above, we'd push_back (0, 0, 199)
-			this->occupiedMemory.push_back(std::make_tuple(pid,index,index+size-1));
+			this->occupiedMemory.push_back(std::make_tuple(pid, index, index + size - 1));
 
 			//sort the occupiedMemory vector by the starting address
 			this->occupiedMemorySort();
@@ -179,10 +190,22 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			for (index; index < size; index++) {
 				flatMemory[index] = pid;
 			}
+
+
 		}
 	}
 	else {
 		size_t numFrames = (size + 1) / this->frameSize;
+
+		while (this->IsMemoryAvailable(size) < 0) {
+			auto i = this->processes.front();
+			auto p = ConsoleManager::getInstance()->getProcess(i);
+			while (true) {
+				if (p->state == Process::process_state::READY) break;
+			}
+			this->deallocate(i);
+		}
+
 		if (!(this->IsMemoryAvailable(size))) {
 			std::vector<int> framesUsed;
 			for (int i = 0; i < numFrames; i++) {
@@ -193,6 +216,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			}
 			this->pidFrames[pid] = framesUsed;
 			this->numFreeFrames -= framesUsed.size();
+			this->processes.push_back(pid);
 		}
 	}
 }
@@ -222,6 +246,17 @@ void MemoryAllocator::deallocate(int pid) {
 	else {	
 		std::vector<int> numFrames = this->pidFrames[pid];
 		this->pidFrames.erase(pid);
+
+		for (auto it = this->processes.begin(); it != this->processes.end();) {
+			if (*it == pid) {
+				it = this->processes.erase(it);
+				break;
+			}
+			else {
+				++it;
+			}
+		}
+
 		for (int i = 0; i < numFrames.size(); i++) {
 			frameMap[numFrames[i]] = -1;
 			this->freeFrameList.push_back(numFrames[i]);
