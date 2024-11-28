@@ -20,6 +20,8 @@ public:
     void deallocate(int pid);
     void mergeFlatMemory();
     void visualizeMemory(u_int qqCycle);
+    std::vector<String> processSmi();
+    std::vector<String> vmstat();
 
     static std::shared_mutex memoryMutex;
 private:

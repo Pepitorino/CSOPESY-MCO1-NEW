@@ -1,5 +1,6 @@
 #include "MemoryAllocator.h"
 #include "ConsoleManager.h"
+#include "Scheduler.h"
 
 MemoryAllocator* MemoryAllocator::sharedAllocator = nullptr;
 std::shared_mutex MemoryAllocator::memoryMutex;
@@ -304,4 +305,57 @@ void MemoryAllocator::createFolder(String folderName) {
 void MemoryAllocator::removeFolder(String folderName) {
 	String command = "rm -rf \"" + folderName + "\"";
 	system(command.c_str());
+}
+
+std::vector<String> MemoryAllocator::processSmi() {
+	//lock memory manager
+	std::shared_lock<std::shared_mutex> lock(memoryMutex);
+
+	//should lock all CPUs here
+	std::vector<std::shared_ptr<CPUSerf>> cpuListCManager = Scheduler::getInstance()->giveCPUs();
+	std::vector<std::unique_lock<std::shared_mutex>> locks;
+	int numCPUs = cpuListCManager.size();
+	locks.reserve(numCPUs);
+
+	//lock all CPUs
+	for (int i = 0; i < numCPUs; i++) {
+		locks.push_back(std::unique_lock<std::shared_mutex>(cpuListCManager.at(i)->CPUMutex));
+	}
+
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
+
+	std::vector<String> strings;
+	std::tuple<float, int, int> coredetails = Scheduler::getInstance()->findCoresUsed();
+	std::ostringstream corestrstream;
+	corestrstream << "CPU Utilization: " << std::fixed << std::setprecision(2) << std::get<0>(coredetails) << "%\n";
+	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
+		size_t memUsed = 0;
+		for (auto t : occupiedMemory) {
+			memUsed += std::get<2>(t) - std::get<1>(t) + 1;
+		}
+		corestrstream << "Memory Usage: " << memUsed << "/" << this->maxMem << "\n";
+		corestrstream << "Memory Util: " << (float)((float)memUsed / (float)this->maxMem)*100 << "%\n";
+	}
+	else {
+		size_t memUsed = maxMem - this->freeFrameList.size()*this->frameSize;
+		corestrstream << "Memory Usage: " << memUsed << "/" << this->maxMem << "\n";
+		corestrstream << "Memory Util: " << (float)((float)memUsed / (float)this->maxMem)*100 << "%\n";
+	}
+	strings.push_back(corestrstream.str());
+
+	strings.push_back("===========================================\n");
+	strings.push_back("Running Processes and Memory Usage:\n");
+	strings.push_back("===========================================\n");
+
+	std::shared_ptr<std::vector<std::shared_ptr<Process>>> processList = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
+
+	for (int i = 0; i < processList->size(); i++) {
+		std::ostringstream procstream;
+		if (processList->at(i)->state == Process::RUNNING) {
+			procstream << std::left << std::setw(15) << processList->at(i)->getName() << processList->at(i)->getMemorySize() << "\n";
+			strings.push_back(procstream.str());
+		}
+	}
+
+	return strings;
 }

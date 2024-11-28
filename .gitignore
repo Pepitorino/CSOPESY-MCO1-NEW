@@ -9,7 +9,8 @@
 *.user
 *.userosscache
 *.sln.docstates
-Memory*Visual*Outputs/
+CSOPESY-MCO1-NEW/Memory*Visual*Outputs/memory_stamp*.txt
+Memory*Visual*Outputs/memory_stamp*.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

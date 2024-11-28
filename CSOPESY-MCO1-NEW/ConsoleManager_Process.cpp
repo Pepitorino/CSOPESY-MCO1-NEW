@@ -78,6 +78,8 @@ std::vector<String> ConsoleManager::obtainProcessDetails() {
 		locks.push_back(std::unique_lock<std::shared_mutex>(cpuListCManager.at(i)->CPUMutex));
 	}
 
+	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
+
 	std::vector<String> strings;
 	//iterate through processTable by sequence of ProcessOrderVector and return a vector of strings
 	//to obtain from each process: process name \t time of last command executed (MM/DD/YYYY) \t
@@ -91,8 +93,6 @@ std::vector<String> ConsoleManager::obtainProcessDetails() {
 	corestrstream << "Cores used: " << std::get<1>(coredetails) << "\n";
 	corestrstream << "Cores available: " << std::get<2>(coredetails) << "\n\n";
 	strings.push_back(corestrstream.str());
-	
-	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 
 	//get copy of processes from processVector
 	strings.push_back("--------------------------------\n");
