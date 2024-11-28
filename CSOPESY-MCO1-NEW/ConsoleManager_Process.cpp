@@ -65,7 +65,6 @@ void ConsoleManager::addProcess(String process) {
 
 //return a string of vector processes for MainConsole to print regarding Process statuses
 std::vector<String> ConsoleManager::obtainProcessDetails() {
-	
  
 	//should lock all CPUs here
 	std::vector<std::shared_ptr<CPUSerf>> cpuListCManager = Scheduler::getInstance()->giveCPUs();
@@ -100,13 +99,25 @@ std::vector<String> ConsoleManager::obtainProcessDetails() {
 	std::shared_ptr<std::vector<std::shared_ptr<Process>>> processList = this->giveProcess_InOrderVectorToScheduler();
 	//iterate through processList
 	std::vector<String> finished_strings; //to be printed after running processes
+
+	//running
+	//iterate through CPUListCManager to return the processes running on each core (if it has) [calls WhatIsYourWork_Slave()]
+	for (int i = 0; i < numCPUs; i++) {
+		std::shared_ptr<Process> process = cpuListCManager.at(i)->WhatIsYourWork_Slave();
+		if (process != nullptr) {
+			std::tuple <String, String, String, int, int, Process::process_state> ProcessDetails = process->HoldapTo();
+			strings.push_back(ProcessDetailsFormatter(ProcessDetails));
+		}
+	}
+
+	//finished
 	for (int i = 0; i < processList->size(); i++) {
 		//separate into finished and running
 		//modify the tuple to obtain the status of the process
 		std::tuple <String, String, String, int, int, Process::process_state> ProcessDetails = processList->at(i)->HoldapTo();
-		if (std::get<5>(ProcessDetails) == Process::RUNNING) // for running processes
-			strings.push_back(ProcessDetailsFormatter(ProcessDetails));
-		else if (std::get<5>(ProcessDetails) == Process::FINISHED)// for finished processes
+		//if (std::get<5>(ProcessDetails) == Process::RUNNING) // for running processes
+		//	strings.push_back(ProcessDetailsFormatter(ProcessDetails));
+		if (std::get<5>(ProcessDetails) == Process::FINISHED)// for finished processes
 			finished_strings.push_back(ProcessDetailsFormatter(ProcessDetails));
 	}
 	strings.push_back("\n");

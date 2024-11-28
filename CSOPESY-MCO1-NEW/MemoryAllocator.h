@@ -37,7 +37,7 @@ private:
     MemoryAllocator& operator=(MemoryAllocator const&) {}; //assignment operator is private
     static MemoryAllocator* sharedAllocator;
 
-    size_t maxMem;
+    size_t maxMem; // total main memory in Kb
     size_t frameSize;
     size_t allocatedMem;
     int numFrames;
@@ -49,6 +49,8 @@ private:
     std::vector<std::tuple<int, size_t, size_t>> occupiedMemory; //pid, beginning of pid memory, end of pid memory
     std::vector<std::tuple<size_t, size_t>> freeList; //starting address, ending address of free contiguous memory, updated upon deallocating
                                                 //used to find free address faster
+
+    uint64_t NumPagedIn, NumPagedOut;
 
     //paging allocator
     std::deque<int> freeFrameList; //index of free frame on frameMap

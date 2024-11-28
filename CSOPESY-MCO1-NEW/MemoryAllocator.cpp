@@ -18,6 +18,8 @@ void MemoryAllocator::initializeMemory(size_t maxMem, size_t frameSize) {
 	sharedAllocator->frameSize = frameSize;
 	sharedAllocator->numFrames = maxMem / frameSize;
 	sharedAllocator->visualizeCounter = 0;
+	sharedAllocator->NumPagedIn = 0;
+	sharedAllocator->NumPagedOut = 0;
 	if (sharedAllocator->numFrames <= 1) {
 		sharedAllocator->allocator = MemoryAllocator::ALLOCATOR_TYPE::FLAT;
 		for (int i = 0; i < sharedAllocator->maxMem; i++) { //one element per byte
@@ -347,15 +349,76 @@ std::vector<String> MemoryAllocator::processSmi() {
 	strings.push_back("Running Processes and Memory Usage:\n");
 	strings.push_back("===========================================\n");
 
-	std::shared_ptr<std::vector<std::shared_ptr<Process>>> processList = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
+	//std::shared_ptr<std::vector<std::shared_ptr<Process>>> processList = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
 
-	for (int i = 0; i < processList->size(); i++) {
+	for (int i = 0; i < numCPUs; i++) {
 		std::ostringstream procstream;
-		if (processList->at(i)->state == Process::RUNNING) {
-			procstream << std::left << std::setw(15) << processList->at(i)->getName() << processList->at(i)->getMemorySize() << "\n";
+		std::shared_ptr<Process> process = cpuListCManager.at(i)->WhatIsYourWork_Slave();
+		if (process != nullptr) {
+			procstream << std::left << std::setw(15) << process->getName() << process->getMemorySize() << "\n";
 			strings.push_back(procstream.str());
 		}
 	}
+
+	return strings;
+}
+
+std::vector<String> MemoryAllocator::vmstat() {
+	//total mem, used mem, free mem, idle cpu ticks, active cpu ticks, total cpu ticks, num paged in, num paged out
+
+	//should lock all CPUs here
+	std::vector<std::shared_ptr<CPUSerf>> cpuListMemManager = Scheduler::getInstance()->giveCPUs();
+	std::vector<std::unique_lock<std::shared_mutex>> locks;
+	int numCPUs = cpuListMemManager.size();
+	locks.reserve(numCPUs);
+
+	//lock all CPUs
+	for (int i = 0; i < numCPUs; i++) {
+		locks.push_back(std::unique_lock<std::shared_mutex>(cpuListMemManager.at(i)->CPUMutex));
+	}
+
+	std::vector<String> strings;
+	std::ostringstream memstream;
+	memstream << "Total Memory: " << this->maxMem << " KB\n";
+	strings.push_back(memstream.str());
+
+	std::ostringstream memstream2;
+	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
+		size_t memUsed = 0;
+		for (auto t : occupiedMemory) {
+			memUsed += std::get<2>(t) - std::get<1>(t) + 1;
+		}
+		memstream2 << "Used Memory: " << memUsed << " KB\n";
+		//free memory
+		memstream2 << "Free Memory: " << this->maxMem - memUsed << " KB\n";
+	}
+	else {
+		size_t memUsed = maxMem - this->freeFrameList.size() * this->frameSize;
+		memstream2 << "Memory Usage: " << memUsed << " KB\n";
+		memstream2 << "Free Memory: " << this->maxMem - memUsed << " KB\n";
+	}
+	strings.push_back(memstream2.str());
+
+
+	std::ostringstream cpustream;
+	//idle cpu ticks, active cpu ticks, total cpu ticks
+	uint64_t idle = 0, active = 0, total = 0;
+	for (int i = 0; i < numCPUs; i++) {
+		idle += cpuListMemManager.at(i)->HowLongYouBeenSlackin();
+		active += cpuListMemManager.at(i)->HowLongYouBeenInDaFields();
+		total += cpuListMemManager.at(i)->HowLongYouveBeenPoor();
+	}
+
+	cpustream << "Idle CPU Ticks: " << idle << "\n";
+	cpustream << "Active CPU Ticks: " << active << "\n";
+	cpustream << "Total CPU Ticks: " << total << "\n";
+	strings.push_back(cpustream.str());
+
+	//needs rework
+	std::ostringstream pagedstream;
+	pagedstream << "Number of Pages Paged In: " << this->NumPagedIn << "\n";
+	pagedstream << "Number of Pages Paged Out: " << this->NumPagedOut << "\n";
+	strings.push_back(pagedstream.str());
 
 	return strings;
 }

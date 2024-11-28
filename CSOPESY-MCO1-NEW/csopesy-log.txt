@@ -1,34 +1,18 @@
 CPU Utilization: 100.00%
-Cores used: 3
+Cores used: 8
 Cores available: 0
 
 --------------------------------
 Running processes:
+process22      (11/28/2024 11:06:48PM)  959            /5000
+process19      (11/28/2024 11:06:48PM)  984            /5000
+process32      (11/28/2024 11:06:48PM)  934            /5000
+process26      (11/28/2024 11:06:48PM)  946            /5000
+process27      (11/28/2024 11:06:48PM)  1013           /5000
+process12      (11/28/2024 11:06:48PM)  1022           /5000
+process18      (11/28/2024 11:06:48PM)  985            /5000
+process0       (11/28/2024 11:06:48PM)  1149           /5000
 
 Finished processes:
-process0       (11/27/2024 07:05:16PM)  Finished       5000           /5000
-process1       (11/27/2024 07:05:17PM)  Finished       5000           /5000
-process2       (11/27/2024 07:05:18PM)  Finished       5000           /5000
-process3       (11/27/2024 07:05:19PM)  Finished       5000           /5000
-process4       (11/27/2024 07:05:28PM)  Finished       5000           /5000
-process6       (11/27/2024 07:05:28PM)  Finished       5000           /5000
-process10      (11/27/2024 07:05:45PM)  Finished       5000           /5000
-process19      (11/27/2024 07:06:07PM)  Finished       5000           /5000
-process27      (11/27/2024 07:06:09PM)  Finished       5000           /5000
-process33      (11/27/2024 07:06:07PM)  Finished       5000           /5000
-process36      (11/27/2024 07:05:31PM)  Finished       5000           /5000
-process41      (11/27/2024 07:05:57PM)  Finished       5000           /5000
-process42      (11/27/2024 07:06:11PM)  Finished       5000           /5000
-process44      (11/27/2024 07:05:58PM)  Finished       5000           /5000
-process54      (11/27/2024 07:05:33PM)  Finished       5000           /5000
-process59      (11/27/2024 07:05:53PM)  Finished       5000           /5000
-process66      (11/27/2024 07:06:23PM)  Finished       5000           /5000
-process82      (11/27/2024 07:05:41PM)  Finished       5000           /5000
-process83      (11/27/2024 07:05:44PM)  Finished       5000           /5000
-process84      (11/27/2024 07:06:20PM)  Finished       5000           /5000
-process95      (11/27/2024 07:05:55PM)  Finished       5000           /5000
-process99      (11/27/2024 07:06:19PM)  Finished       5000           /5000
-process104     (11/27/2024 07:05:42PM)  Finished       5000           /5000
-process112     (11/27/2024 07:06:22PM)  Finished       5000           /5000
 --------------------------------
 

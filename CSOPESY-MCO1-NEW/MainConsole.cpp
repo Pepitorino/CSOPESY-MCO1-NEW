@@ -153,10 +153,10 @@ void MainConsole::commands(String input) {
         }
     }
     else if (args[0] == "vmstat") {
-        //std::vector<String> outputList = MemoryAllocator::getInstance()->vmstat();
-        //for (String line : outputList) {
-        //    this->toPrint.push_back(line);
-        //}
+        std::vector<String> outputList = MemoryAllocator::getInstance()->vmstat();
+        for (String line : outputList) {
+            this->toPrint.push_back(line);
+        }
     }
     else if (args[0] == "screen") {
         if (args.size() < 2) {

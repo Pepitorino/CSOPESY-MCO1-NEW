@@ -18,6 +18,11 @@ public:
 	void switchProcess(std::shared_ptr<Process>);
 	void fireSerf(); //to be called by Scheduler when closing the program
 	bool hasProcess(); //{ return process != nullptr; }
+	std::shared_ptr<Process> WhatIsYourWork_Slave(); //to be used by Scheduler to get the process
+
+	uint64_t HowLongYouBeenSlackin();
+	uint64_t HowLongYouBeenInDaFields();
+	uint64_t HowLongYouveBeenPoor();
 
 	std::shared_mutex CPUMutex;
 
@@ -31,11 +36,11 @@ private:
 	void WorkProcess(); //just to work on the process at hand
 	// (in this case executePrint() for PRINT), add to ProcessOutputs vector of Process
 	
-	int coreId;
+	int coreId, delay;
 	std::shared_ptr<Process> process;
 	bool SerfisRunning; //initialized true
 
-	uint32_t CPUCycles, CPUWaittime, delay; // needed pa ba this?
+	uint64_t CPUCycles, CPUIdleTime, CPUActiveTime; // needed pa ba this? [MCO2: yes, needed na]
 	int CPUCyclesCounter; // for RR
 	int RRLimit; // for RR, -1 for FCFS
 	// bool SerfisAvailable; //initialized true, considered not needed since we can just check if process is nullptr or finished state

@@ -9,7 +9,8 @@ CPUSerf::CPUSerf(int coreId, int RRLimit, uint32_t delay) : ThreadClass() {
 	this->process = nullptr; //when constructed, no available process is possible
 	this->SerfisRunning = true; //initialized true
 	this->CPUCycles = 0;
-	this->CPUWaittime = 0;
+	this->CPUIdleTime = 0;
+	this->CPUActiveTime = 0;
 	this->CPUCyclesCounter = 0;
 	this->RRLimit = RRLimit;
 	this->delay = delay;
@@ -87,6 +88,7 @@ void CPUSerf::WorkProcess() {
 		CPUCyclesCounter = 0;
 	}
 	CPUCycles++;
+	CPUActiveTime++;
 }
 
 void CPUSerf::run() {
@@ -98,7 +100,7 @@ void CPUSerf::run() {
 			//CPUWaittime++;
 			//CPUCycles++;
 			if (this->process == nullptr) {
-				CPUWaittime++;
+				CPUIdleTime++;
 				CPUCycles++;
 			}
 		}
@@ -116,6 +118,24 @@ void CPUSerf::run() {
 			//either FCFS or RR, keep them RUNNING
 		}
 	}
+}
+
+//return to caller the process that the CPU is currently running
+std::shared_ptr<Process> CPUSerf::WhatIsYourWork_Slave() {
+	if (this->process == nullptr) return nullptr;
+	return this->process;
+}
+
+uint64_t CPUSerf::HowLongYouBeenSlackin() {
+	return this->CPUIdleTime;
+}
+
+uint64_t CPUSerf::HowLongYouBeenInDaFields() {
+	return this->CPUActiveTime;
+}
+
+uint64_t CPUSerf::HowLongYouveBeenPoor() {
+	return this->CPUCycles;
 }
 
 bool CPUSerf::hasProcess() {
