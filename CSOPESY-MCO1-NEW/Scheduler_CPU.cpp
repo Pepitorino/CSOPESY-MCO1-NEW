@@ -9,9 +9,13 @@
 // <--- [for ConsoleManager] --->
 //used std::tuple instead of int* for automatic deallocation
 // std::tuple<> is destroyed out of scope
+// CPUs are locked at this point by ConsoleManager
 std::tuple<float, int, int> Scheduler::findCoresUsed() {
 	int numCores = cpuList.size();
 	int coresUsed = 0;
+
+	//check how many cores are used (aka checking which have processes)
+
 	for (int i = 0; i < cpuList.size(); i++) 
 		if (cpuList.at(i)->hasProcess()) coresUsed++;
 	
@@ -20,6 +24,11 @@ std::tuple<float, int, int> Scheduler::findCoresUsed() {
 	numCores = numCores - coresUsed; //cores available
 
 	return std::make_tuple(CPUUsePercent, coresUsed, numCores);
+}
+
+// give cpuList to ConsoleManager
+std::vector<std::shared_ptr<CPUSerf>> Scheduler::giveCPUs() {
+	return this->cpuList;
 }
 
 // <--- [for CPUs] --->
@@ -32,7 +41,7 @@ void Scheduler::hireCPUSerfs(int cores) {
 }
 
 //to be called by CPUs whenever they're ready to take in a new process
-bool Scheduler::CPUProcessRequest(int CPUid) {
+void Scheduler::CPUProcessRequest(int CPUid) {
 	//use lock_guard to lock the mutex
 	if (running) {
 		std::lock_guard<std::mutex> lock(processQueueMutex);
@@ -41,19 +50,30 @@ bool Scheduler::CPUProcessRequest(int CPUid) {
 
 		//check if processQueue is empty
 		if (processQueue.empty()) {
-			if (SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid) != nullptr) SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
-			return false;
+			SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+			return;
 		}
 		//if not empty, get the front process
 		Process_ToGive = processQueue.front();
-		//give the process to the CPUSerf
-		SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
 		//pop the process from the processQueue
 		processQueue.pop();
-		return true;
-		//auto unlock mutex when lock_guard goes out of scope
+		if (MemoryAllocator::getInstance()->IsProcessInMemory(Process_ToGive->getPid())) {
+			//give the process to the CPUSerf
+			SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+		}
+		//if process is not in memory, check if there is enough memory to allocate
+		else {
+			if (MemoryAllocator::getInstance()->IsMemoryAvailable(Process_ToGive->getMemorySize()) >= 0) {
+				//if not in memory, add to memory
+				MemoryAllocator::getInstance()->allocate(Process_ToGive->getPid(), Process_ToGive->getMemorySize());
+				SCHEDULER_FOR_THE_STREETS->cpuList.at(CPUid)->switchProcess(Process_ToGive);
+			}
+			else {
+				//if not enough memory, add the process back to the processQueue (no backing store yet)
+				processQueue.push(Process_ToGive);
+			}
+		}
 	}
-	return false;
 }
 
 //to be called when shutting down

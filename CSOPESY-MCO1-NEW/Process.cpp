@@ -3,7 +3,7 @@
 #include "PrintCommand.h"
 
 //only called in MainConsole whenever there is a successful checking of non-existing process inquired.
-Process::Process(String name, int instructions) {
+Process::Process(String name, int instructions, size_t memorySize) {
 	std::unique_lock<std::shared_mutex> lock(processMutex);
 	this->processName = name;
 	this->pid = ConsoleManager::getInstance()->countNumberProcesses();
@@ -12,6 +12,7 @@ Process::Process(String name, int instructions) {
 	this->state = process_state::WAITING;
 	this->ProcessOutputs = {};
 	this->timemade = time(0);
+	this->memorySize = memorySize;
 
 	//initialize commandList
 	for (int i = 0; i < instructions; i++) {
@@ -73,7 +74,7 @@ void Process::CommandExecuted(int RanbyCPUID) {
 //void Process::print() {}
 
 // for ConsoleManager
-std::tuple<String, String, String, int, int> Process::HoldapTo() {
+std::tuple<String, String, String, int, int, Process::process_state> Process::HoldapTo() {
 	// name, time of last command exc or time made (if no command executed), last core run on, current line code, size of commandList
 	// this->processName
 	String time = "";
@@ -110,7 +111,7 @@ std::tuple<String, String, String, int, int> Process::HoldapTo() {
 	//this->processProgress
 	int NumberOfCommands = this->commandList.size();
 
-	return std::make_tuple(this->processName, time, core, this->processProgress, NumberOfCommands);
+	return std::make_tuple(this->processName, time, core, this->processProgress, NumberOfCommands, this->state);
 }
 
 String Process::getName() {
@@ -132,4 +133,8 @@ int Process::getLines() {
 int Process::getCpuCoreId()
 {
 	return this->cpuCoreId;
+}
+
+size_t Process::getMemorySize() {
+	return this->memorySize;
 }

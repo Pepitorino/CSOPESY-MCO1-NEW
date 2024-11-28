@@ -33,6 +33,7 @@
     <ClInclude Include="CPUSerf.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="MainConsole.h" />
+    <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="PrintCommand.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessCommandOutput.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainConsole.cpp" />
+    <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="PrintCommand.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ProcessCommandOutput.cpp" />
@@ -61,6 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

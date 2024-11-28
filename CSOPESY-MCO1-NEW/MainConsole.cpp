@@ -2,6 +2,7 @@
 #include "TypeDefRepo.h"
 #include <windows.h>
 #include "ConsoleManager.h"
+#include "MemoryAllocator.h"
 
 void MainConsole::title() {
 	std::cout << "============================================================================\n";
@@ -123,8 +124,8 @@ void MainConsole::commands(String input) {
         return;
     }
 
-	else if (args[0] == "scheduler-test") {
-		//to be continued
+    else if (args[0] == "scheduler-test") {
+        //to be continued
         this->toPrint.push_back("Dummy process generation starting...\n");
 
         //to include yung printing out the list of processes
@@ -137,13 +138,25 @@ void MainConsole::commands(String input) {
         consoleManagerInstance->setCreateBatches(false);
     }
     else if (args[0] == "report-util") {
-		//to be continued
+        //to be continued
         std::vector<String> outputList = consoleManagerInstance->obtainProcessDetails();
         std::fstream ofs;
         ofs.open("csopesy-log.txt", std::ios::out | std::ios::trunc);
         for (String string : outputList) ofs << string;
         ofs.close();
         this->toPrint.push_back("Report generated at csopesy-log.txt\n");
+    }
+    else if (args[0] == "process-smi") {
+        std::vector<String> outputList = MemoryAllocator::getInstance()->processSmi();
+        for (String line : outputList) {
+            this->toPrint.push_back(line);
+        }
+    }
+    else if (args[0] == "vmstat") {
+        //std::vector<String> outputList = MemoryAllocator::getInstance()->vmstat();
+        //for (String line : outputList) {
+        //    this->toPrint.push_back(line);
+        //}
     }
     else if (args[0] == "screen") {
         if (args.size() < 2) {
@@ -185,7 +198,6 @@ void MainConsole::commands(String input) {
         }
         else if (args[1] == "-ls") {
 			//use obtain string vector returned by ConsoleManager, then add to toPrint each element of string vector received
-			std::cout << "screen -ls" << " command recognized. Doing something." << std::endl;
 			//use consoleManager to get list of String vectors
 			std::vector<String> outputList = consoleManagerInstance->obtainProcessDetails();
 			for (String line : outputList) {

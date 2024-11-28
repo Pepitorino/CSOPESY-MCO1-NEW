@@ -2,6 +2,7 @@
 #include "ProcessCommandOutput.h"
 #include "Scheduler.h"
 #include "ConsoleManager.h"
+#include "MemoryAllocator.h"
 
 CPUSerf::CPUSerf(int coreId, int RRLimit, uint32_t delay) : ThreadClass() {
 	this->coreId = coreId;
@@ -41,18 +42,12 @@ void CPUSerf::ProcessWaitAndGet() {
 	//to call a function in the Scheduler to get a process from the processQueue, keeps the 
 	// run() function of the CPUSerf running until a process is obtained.
 
-	std::lock_guard<std::mutex> lock(CPUMutex);
-	//call CPUProcessRequest(this->coreId) from Scheduler
-	bool waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
-	while (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
-		CPUWaittime++;
-		CPUCycles++;
-		waiting = !(Scheduler::getInstance()->CPUProcessRequest(this->coreId));
-	};
+	//std::lock_guard<std::mutex> lock(CPUMutex);
+	Scheduler::getInstance()->CPUProcessRequest(this->coreId);
 }
 
 void CPUSerf::WorkProcess() {
-	std::lock_guard<std::mutex> lock(CPUMutex);
+	//std::lock_guard<std::mutex> lock(CPUMutex);
 
 	if (delay > 0) {
 		if (CPUCycles % delay == 0) {
@@ -81,10 +76,12 @@ void CPUSerf::WorkProcess() {
 
 	//this is after CommandExecuted, so we can check if process is finished
 	if (this->process->getState() == Process::FINISHED) {
+		MemoryAllocator::getInstance()->deallocate(this->process->getPid());
 		this->process = nullptr;
 		CPUCyclesCounter = 0;
 	}
 	else if (CPUCyclesCounter == RRLimit) {
+		//Removed: added to main.c //MemoryAllocator::getInstance()->visualizeMemory(this->coreId, this->CPUCycles);
 		this->process->setState(Process::WAITING);
 		this->process = nullptr;
 		CPUCyclesCounter = 0;
@@ -96,19 +93,25 @@ void CPUSerf::run() {
 	//this->SerfisReady = false;
 	while (SerfisRunning) {
 		if (ConsoleManager::getInstance()->getRunning() && this->process == nullptr) {
+			std::unique_lock<std::shared_mutex> lock(CPUMutex);
 			this->ProcessWaitAndGet();
 			//CPUWaittime++;
 			//CPUCycles++;
+			if (this->process == nullptr) {
+				CPUWaittime++;
+				CPUCycles++;
+			}
 		}
 		else if (this->process != nullptr && ConsoleManager::getInstance()->getRunning() && this->process->hasRemainingCommands()) {
 			//this means that the process is in another core that is running
+			std::unique_lock<std::shared_mutex> lock(CPUMutex);
 			std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 			std::unique_lock<std::shared_mutex> lockprocess(this->process->processMutex);
-			if (this->process->getState() == Process::FINISHED) {
-				this->process = nullptr;
-				CPUCyclesCounter = 0;
-			}
-			else if (this->process->getState() == Process::RUNNING && (this->process->getCpuCoreId() != this->coreId)) this->process = nullptr;
+			//if (this->process->getState() == Process::FINISHED) {
+			//	this->process = nullptr;
+			//	CPUCyclesCounter = 0;
+			//}
+			if (this->process->getState() == Process::RUNNING && (this->process->getCpuCoreId() != this->coreId)) this->process = nullptr;
 			else this->WorkProcess();
 			//either FCFS or RR, keep them RUNNING
 		}

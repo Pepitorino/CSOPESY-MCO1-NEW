@@ -3,6 +3,7 @@
 #include "Process.h"
 #include "CPUSerf.h"
 #include "ConsoleManager.h"
+#include "MemoryAllocator.h"
 
 class Scheduler : public ThreadClass
 {
@@ -23,10 +24,11 @@ public:
 	// void ProcessQueuer
 	//void addProcess(); //adds process to processqueue 
 	//void finishProcess();
-	bool CPUProcessRequest(int CPUid); // to be used by CPUSerf whenever it's ready to take in a new process
+	void CPUProcessRequest(int CPUid); // to be used by CPUSerf whenever it's ready to take in a new process
 	void shutdown();
 	void run();
 	std::tuple<float, int, int> findCoresUsed();
+	std::vector<std::shared_ptr<CPUSerf>> giveCPUs();
 
 private:
 

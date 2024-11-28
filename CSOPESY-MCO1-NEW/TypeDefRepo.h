@@ -18,8 +18,11 @@
 #include <tuple>
 #include <fstream>
 #include <shared_mutex>
+#include <unordered_map>
+#include <unordered_set>
 
+//for file system, used in Memory Allocator
+#include <sys/stat.h>
+#include <filesystem>
 
 typedef std::string String;
-
-extern std::mutex globalProcessListMutex;

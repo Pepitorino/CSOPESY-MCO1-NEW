@@ -1,14 +1,16 @@
 #include "TypeDefRepo.h"
 #include "ConsoleManager.h"
 #include "Scheduler.h"
+#include "MemoryAllocator.h"
 
 int main() {
 	srand(time(NULL));
-	uint64_t timeslice = 1;
+	uint64_t timeslice = 0;
 	bool running = true;
 
 	ConsoleManager::initialize();
 	Scheduler::initialize();
+	MemoryAllocator::initialize();
 
 	ConsoleManager* consoleManagerInstance = ConsoleManager::getInstance();
 	Scheduler* schedulerInstance = Scheduler::getInstance();
@@ -17,6 +19,7 @@ int main() {
 	// we have separate class for Scheduler
 
 	while (consoleManagerInstance->getRunning()) {
+		MemoryAllocator::getInstance()->visualizeMemory(timeslice);
 		consoleManagerInstance->createDummyProcess(timeslice);
 		consoleManagerInstance->tick();
 		timeslice++;
