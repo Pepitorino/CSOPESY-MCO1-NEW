@@ -130,7 +130,7 @@ int MemoryAllocator::IsMemoryAvailable(size_t size) {
 		}
 	}
 	else {
-		int freeFrames = size / this->frameSize;
+		int freeFrames = (this->frameSize>=size) ? 1 : (size+1) / this->frameSize;
 		if (this->numFreeFrames >= freeFrames) return 0;
 	}
 	return -1;
@@ -198,7 +198,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 		}
 	}
 	else {
-		size_t numFrames = (size + 1) / this->frameSize;
+		size_t numFrames = (this->frameSize >= size) ? 1 : (size + 1) / this->frameSize;
 
 		while (this->IsMemoryAvailable(size) < 0) {
 			auto i = this->processes.front();
@@ -315,14 +315,15 @@ std::vector<String> MemoryAllocator::processSmi() {
 
 	//should lock all CPUs here
 	std::vector<std::shared_ptr<CPUSerf>> cpuListCManager = Scheduler::getInstance()->giveCPUs();
-	std::vector<std::unique_lock<std::shared_mutex>> locks;
+	//std::vector<std::unique_lock<std::shared_mutex>> locks;
 	int numCPUs = cpuListCManager.size();
-	locks.reserve(numCPUs);
+	//locks.reserve(numCPUs);
 
 	//lock all CPUs
-	for (int i = 0; i < numCPUs; i++) {
-		locks.push_back(std::unique_lock<std::shared_mutex>(cpuListCManager.at(i)->CPUMutex));
-	}
+	//for (int i = 0; i < numCPUs; i++) {
+	//	locks.push_back(std::unique_lock<std::shared_mutex>(cpuListCManager.at(i)->CPUMutex));
+	//}
+	
 
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 
@@ -368,14 +369,14 @@ std::vector<String> MemoryAllocator::vmstat() {
 
 	//should lock all CPUs here
 	std::vector<std::shared_ptr<CPUSerf>> cpuListMemManager = Scheduler::getInstance()->giveCPUs();
-	std::vector<std::unique_lock<std::shared_mutex>> locks;
+	//std::vector<std::unique_lock<std::shared_mutex>> locks;
 	int numCPUs = cpuListMemManager.size();
-	locks.reserve(numCPUs);
+	//locks.reserve(numCPUs);
 
 	//lock all CPUs
-	for (int i = 0; i < numCPUs; i++) {
-		locks.push_back(std::unique_lock<std::shared_mutex>(cpuListMemManager.at(i)->CPUMutex));
-	}
+	//for (int i = 0; i < numCPUs; i++) {
+	//	locks.push_back(std::unique_lock<std::shared_mutex>(cpuListMemManager.at(i)->CPUMutex));
+	//}
 
 	std::vector<String> strings;
 	std::ostringstream memstream;

@@ -27,8 +27,8 @@ void ConsoleManager::createDummyProcess(int timeslice) {
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
 	int range = this->maxIns - this->minIns;
 	int randomNum = (range) ? rand() % range + this->minIns : this->minIns;
-	size_t memRange = this->maxMemPerProc - this->minMemPerProc;
-	size_t randomMem = (range) ? rand() % memRange + this->minMemPerProc : this->minMemPerProc;
+	int memRange = this->maxMemPerProc - this->minMemPerProc;
+	size_t randomMem = (memRange) ? rand() % memRange + this->minMemPerProc : this->minMemPerProc;
 
 	String name = "process" + std::to_string(this->countNumberProcesses());
 
