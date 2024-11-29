@@ -19,7 +19,7 @@ int main() {
 	// we have separate class for Scheduler
 
 	while (consoleManagerInstance->getRunning()) {
-		MemoryAllocator::getInstance()->visualizeMemory(timeslice);
+		//MemoryAllocator::getInstance()->printBackingStore();
 		consoleManagerInstance->createDummyProcess(timeslice);
 		consoleManagerInstance->tick();
 		timeslice++;

@@ -46,65 +46,6 @@ void MemoryAllocator::initializeMemory(size_t maxMem, size_t frameSize) {
 
 }
 
-void MemoryAllocator::visualizeMemory(u_int qqCycle) {
-	std::unique_lock<std::shared_mutex> lock(memoryMutex);
-	//not implemented yet
-	//output the .txt file to the 'Memory Visual Outputs' folder
-	//file should be named 'Core(Coreid)_memory_stamp_(qqCycle).txt'
-	//get current time
-	std::vector <String> outputlines;
-	time_t now = time(0);
-	// Convert time_t to tm struct for local time
-	struct tm localTime;
-	localtime_s(&localTime, &now);
-
-	// Create a buffer to hold the formatted time string
-	char timeBuffer[80];
-	strftime(timeBuffer, sizeof(timeBuffer), "%m/%d/%Y %I:%M:%S%p", &localTime);
-	//std::cout << "Time Started: " << timeBuffer << std::endl;
-	String timeBuffer2 = timeBuffer;
-	String string_output = "Timestamp: (" + timeBuffer2 + ")";
-	outputlines.push_back(string_output);
-
-	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
-		String no_process_inmemory = "Number of processes in memory: " + std::to_string(this->occupiedMemory.size());
-		outputlines.push_back(no_process_inmemory);
-
-		//use freeList to calculate the total free memory
-		size_t totalFreeMemory = 0;
-		for (auto t : this->freeList) {
-			totalFreeMemory += std::get<1>(t) - std::get<0>(t) + 1;
-		}
-		String free_memory = "Total external fragmentation in KB: " + std::to_string(totalFreeMemory);
-		outputlines.push_back(free_memory);
-
-		String end, pid, start;
-		end = "----end---- = " + std::to_string(this->maxMem);
-		outputlines.push_back(end);
-		for (int i = this->occupiedMemory.size() - 1; i >= 0; i--) {
-			outputlines.push_back("");
-			end = std::to_string(std::get<2>(this->occupiedMemory[i]));
-			outputlines.push_back(end);
-			pid = "PID: " + std::to_string(std::get<0>(this->occupiedMemory[i]));
-			outputlines.push_back(pid);
-			start = std::to_string(std::get<1>(this->occupiedMemory[i]));
-			outputlines.push_back(start);
-		}
-		outputlines.push_back("");
-		start = "----start---- = 0";
-		outputlines.push_back(start);
-	}
-	else {
-		//paging allocator, not implemented yet
-	}
-	String filename = "Memory Visual Outputs/memory_stamp_" + std::to_string(qqCycle) + ".txt";
-	std::ofstream file(filename);
-	for (String s : outputlines) {
-		file << s << std::endl;
-	}
-	file.close();
-}
-
 void MemoryAllocator::destroy() {
 	delete sharedAllocator;
 }
@@ -130,7 +71,7 @@ int MemoryAllocator::IsMemoryAvailable(size_t size) {
 		}
 	}
 	else {
-		int freeFrames = size / this->frameSize;
+		int freeFrames = (this->frameSize>=size) ? 1 : (size+1 / this->frameSize);
 		if (this->numFreeFrames >= freeFrames) return 0;
 	}
 	return -1;
@@ -163,14 +104,18 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 		//check if theres memory available
 		size_t index = this->IsMemoryAvailable(size);
 
+		//ready or not here i come
 		while (this->IsMemoryAvailable(size) < 0) {
 			auto t = this->occupiedMemory.front();
 			auto p = ConsoleManager::getInstance()->getProcess(std::get<0>(t));
 			while (true) {
 				if (p->state == Process::process_state::READY) break;
 			}
+			this->addToBackingStore(std::get<0>(t));
 			this->deallocate(std::get<0>(t));
 		}
+
+		if (this->inBackingStore(pid)) this->removeFromBackingStore(pid);
 
 		//if there is, remove that memory from the freeList, set it in flatMemory, and add it to occupiedMemory
 		if (index >= 0) {
@@ -198,7 +143,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 		}
 	}
 	else {
-		size_t numFrames = (size + 1) / this->frameSize;
+		size_t numFrames = (this->frameSize >= size) ? 1 : (size + 1 / this->frameSize);
 
 		while (this->IsMemoryAvailable(size) < 0) {
 			auto i = this->processes.front();
@@ -206,8 +151,11 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			while (true) {
 				if (p->state == Process::process_state::READY) break;
 			}
+			this->addToBackingStore(i);
 			this->deallocate(i);
 		}
+
+		if (this->inBackingStore(pid)) this->removeFromBackingStore(pid);
 
 		if (!(this->IsMemoryAvailable(size))) {
 			std::vector<int> framesUsed;
@@ -220,12 +168,16 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			this->pidFrames[pid] = framesUsed;
 			this->numFreeFrames -= framesUsed.size();
 			this->processes.push_back(pid);
+			this->NumPagedIn += framesUsed.size();
 		}
 	}
 }
 
 void MemoryAllocator::deallocate(int pid) {
 	std::shared_lock<std::shared_mutex> lock(memoryMutex);
+
+	if (this->inBackingStore(pid)) this->removeFromBackingStore(pid);
+
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		int startIndex = -1;
 		int endIndex = -1;
@@ -265,6 +217,7 @@ void MemoryAllocator::deallocate(int pid) {
 			this->freeFrameList.push_back(numFrames[i]);
 		}
 		this->numFreeFrames += numFrames.size();
+		this->NumPagedOut += numFrames.size();
 		//paging allocator, not implemented yet
 		//idea is to set the frameMap frames to -1, then add those to freeFrameList
 	}
@@ -421,4 +374,129 @@ std::vector<String> MemoryAllocator::vmstat() {
 	strings.push_back(pagedstream.str());
 
 	return strings;
+}
+
+void MemoryAllocator::addToBackingStore(int pid) {
+	std::shared_ptr<Process> process = ConsoleManager::getInstance()->getProcess(pid);
+	this->backingStore[pid] = std::make_tuple(process->getName(), process->getMemorySize(), -1, process->getProcessProgress(), process->getLines());
+}
+void MemoryAllocator::addToBackingStore(int pid, std::vector<int> frames) {
+	std::shared_ptr<Process> process = ConsoleManager::getInstance()->getProcess(pid);
+	this->backingStore[pid] = std::make_tuple(process->getName(), process->getMemorySize(), frames.size(), process->getProcessProgress(), process->getLines());
+}
+void MemoryAllocator::removeFromBackingStore(int pid) {
+	this->backingStore.erase(pid);
+}
+bool MemoryAllocator::inBackingStore(int pid) {
+	return backingStore.find(pid) != backingStore.end();
+}
+void MemoryAllocator::printBackingStore() {
+	//do the 
+	std::unique_lock<std::shared_mutex> lock(memoryMutex);
+	//not implemented yet
+	//output the .txt file to the 'Memory Visual Outputs' folder
+	//file should be named 'Core(Coreid)_memory_stamp_(qqCycle).txt'
+	//get current time
+	std::vector <String> outputlines;
+	time_t now = time(0);
+	// Convert time_t to tm struct for local time
+	struct tm localTime;
+	localtime_s(&localTime, &now);
+	// Create a buffer to hold the formatted time string
+	char timeBuffer[80];
+	strftime(timeBuffer, sizeof(timeBuffer), "%m/%d/%Y %I:%M:%S%p", &localTime);
+	//std::cout << "Time Started: " << timeBuffer << std::endl;
+	String timeBuffer2 = timeBuffer;
+	String string_output = "Timestamp: (" + timeBuffer2 + ")";
+	outputlines.push_back(string_output);
+	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
+		String no_process_inmemory = "Number of processes in memory: " + std::to_string(this->occupiedMemory.size());
+		outputlines.push_back(no_process_inmemory);
+		//use freeList to calculate the total free memory
+		size_t totalFreeMemory = 0;
+		for (auto t : this->freeList) {
+			totalFreeMemory += std::get<1>(t) - std::get<0>(t) + 1;
+		}
+		String free_memory = "Total external fragmentation in KB: " + std::to_string(totalFreeMemory);
+		outputlines.push_back(free_memory);
+		String end, pid, start;
+		end = "----end---- = " + std::to_string(this->maxMem);
+		outputlines.push_back(end);
+		for (int i = this->occupiedMemory.size() - 1; i >= 0; i--) {
+			outputlines.push_back("");
+			end = std::to_string(std::get<2>(this->occupiedMemory[i]));
+			outputlines.push_back(end);
+			pid = "PID: " + std::to_string(std::get<0>(this->occupiedMemory[i]));
+			outputlines.push_back(pid);
+			start = std::to_string(std::get<1>(this->occupiedMemory[i]));
+			outputlines.push_back(start);
+		}
+		outputlines.push_back("");
+		start = "----start---- = 0";
+		outputlines.push_back(start);
+	}
+	else {
+		String no_process_inmemory = "Number of processes in memory: " + std::to_string(this->occupiedMemory.size());
+		outputlines.push_back(no_process_inmemory);
+		String free_memory = "Total pages used: " + std::to_string(numFrames - numFreeFrames);
+		outputlines.push_back(free_memory);
+		String end, pid, start;
+		end = "----end---- = " + std::to_string(this->numFrames);
+		outputlines.push_back(end);
+		for (int i = this->frameMap.size() - 1; i >= 0; i--) {
+			outputlines.push_back("");
+			end = std::to_string(i);
+			outputlines.push_back(end);
+			int framePid = this->frameMap[i];
+			if (framePid >= 0) {
+				pid = "PID: " + std::to_string(this->frameMap[i]);
+			}
+			else {
+				pid = "N/A";
+			}
+			outputlines.push_back(pid);
+		}
+		outputlines.push_back("");
+		start = "----start---- = 0";
+		outputlines.push_back(start);
+	}
+	outputlines.push_back("\n\n==============================================\n");
+	std::vector<String> backingStoreLines;
+	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
+		outputlines.push_back("Processes in Backing Store: \n");
+		for (auto it = backingStore.begin(); it != backingStore.end(); ++it) {
+			int key = it->first;
+			auto& value = it->second;
+			std::ostringstream process;
+			process << "\n" << std::get<0>(value) << "\n";
+			process << "\tPID: " << key << "\n";
+			process << "\tMemory Size: " << std::get<1>(value) << "\n";
+			process << "\tCommands Done: " << std::get<3>(value) << "\n";
+			process << "\tCommands Left: " << std::get<4>(value) << "\n";
+			backingStoreLines.push_back(process.str());
+		}
+	}
+	else {
+		outputlines.push_back("Processes in Backing Store: \n");
+		for (auto it = backingStore.begin(); it != backingStore.end(); ++it) {
+			int key = it->first;
+			auto& value = it->second;
+			std::ostringstream process;
+			process << "\n" << std::get<0>(value) << "\n";
+			process << "\tPID: " << key << "\n";
+			process << "\tMemory Size: " << std::get<1>(value) << "\n";
+			process << "\tPages Used: " << std::get<2>(value) << "\n";
+			process << "\tCommands Done: " << std::get<3>(value) << "\n";
+			process << "\tCommands Left: " << std::get<4>(value) << "\n";
+			backingStoreLines.push_back(process.str());
+		}
+	}
+	outputlines.insert(outputlines.end(), backingStoreLines.begin(), backingStoreLines.end());
+	outputlines.push_back("\n\n==============================================\n");
+	String filename = "BackingStore.txt";
+	std::ofstream file(filename);
+	for (String s : outputlines) {
+		file << s << std::endl;
+	}
+	file.close();
 }
