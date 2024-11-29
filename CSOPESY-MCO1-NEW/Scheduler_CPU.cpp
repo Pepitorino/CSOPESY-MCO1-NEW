@@ -44,7 +44,7 @@ void Scheduler::hireCPUSerfs(int cores) {
 void Scheduler::CPUProcessRequest(int CPUid) {
 	//use lock_guard to lock the mutex
 	if (running) {
-		std::lock_guard<std::mutex> lock(processQueueMutex);
+		std::lock_guard<std::shared_mutex> lock(processQueueMutex);
 		//create a shared_ptr of Process to be used by CPUSerf
 		std::shared_ptr<Process> Process_ToGive = nullptr;
 

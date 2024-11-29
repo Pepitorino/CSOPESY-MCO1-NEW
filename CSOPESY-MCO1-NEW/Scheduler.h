@@ -29,6 +29,9 @@ public:
 	void run();
 	std::tuple<float, int, int> findCoresUsed();
 	std::vector<std::shared_ptr<CPUSerf>> giveCPUs();
+	std::queue<std::shared_ptr<Process>> giveProcessQueue();
+
+	static std::shared_mutex processQueueMutex;
 
 private:
 
@@ -48,7 +51,6 @@ private:
 	//processqueue is a sharedptr now between scheduler and its scheduling type
 	bool initialized = false;
 	bool running;
-	std::mutex processQueueMutex;
 
 
 	// we don't have a vector of shared_ptr processes in Console Manager, so a solution is to have a processList copy in Sched

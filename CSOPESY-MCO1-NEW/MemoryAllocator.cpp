@@ -1,6 +1,7 @@
 #include "MemoryAllocator.h"
 #include "ConsoleManager.h"
 #include "Scheduler.h"
+#include "Process.h"
 
 MemoryAllocator* MemoryAllocator::sharedAllocator = nullptr;
 std::shared_mutex MemoryAllocator::memoryMutex;
@@ -100,6 +101,12 @@ void MemoryAllocator::occupiedMemorySort() {
 
 void MemoryAllocator::allocate(int pid, size_t size) {
 	std::shared_lock<std::shared_mutex> lock(memoryMutex);
+	//lock consolmanager process mutex list
+	std::lock_guard<std::shared_mutex> lockglobal(Scheduler::processQueueMutex);
+
+	//obtain a copy of the processqueue from scheduler using std::queue<std::shared_ptr<Process>> Scheduler::giveProcessQueue()
+	std::queue<std::shared_ptr<Process>> processQueue = Scheduler::getInstance()->giveProcessQueue();
+
 	if (this->allocator == MemoryAllocator::ALLOCATOR_TYPE::FLAT) {
 		//check if theres memory available
 		size_t index = this->IsMemoryAvailable(size);
@@ -109,7 +116,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			auto t = this->occupiedMemory.front();
 			auto p = ConsoleManager::getInstance()->getProcess(std::get<0>(t));
 			while (true) {
-				if (p->state == Process::process_state::READY) break;
+				if (isProcessinProcessQueue(p->getPid(), processQueue)) break;
 			}
 			this->addToBackingStore(std::get<0>(t));
 			this->deallocate(std::get<0>(t));
@@ -138,8 +145,6 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			for (index; index < size; index++) {
 				flatMemory[index] = pid;
 			}
-
-
 		}
 	}
 	else {
@@ -149,7 +154,7 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			auto i = this->processes.front();
 			auto p = ConsoleManager::getInstance()->getProcess(i);
 			while (true) {
-				if (p->state == Process::process_state::READY) break;
+				if (isProcessinProcessQueue(p->getPid(), processQueue)) break;
 			}
 			this->addToBackingStore(i);
 			this->deallocate(i);
@@ -171,6 +176,16 @@ void MemoryAllocator::allocate(int pid, size_t size) {
 			this->NumPagedIn += framesUsed.size();
 		}
 	}
+}
+
+bool MemoryAllocator::isProcessinProcessQueue(int pid, std::queue<std::shared_ptr<Process>> processQueue) {
+	while (!processQueue.empty()) {
+		if (processQueue.front()->getPid() == pid) {
+			return true;
+		}
+		processQueue.pop();
+	}
+	return false;
 }
 
 void MemoryAllocator::deallocate(int pid) {

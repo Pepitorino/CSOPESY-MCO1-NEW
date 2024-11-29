@@ -4,14 +4,14 @@
 
 void Scheduler::processListCopyUpdater() {
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
-	std::lock_guard<std::mutex> lock(processQueueMutex);
+	std::lock_guard<std::shared_mutex> lock(processQueueMutex);
 	SCHEDULER_FOR_THE_STREETS->processListCopy = ConsoleManager::getInstance()->giveProcess_InOrderVectorToScheduler();
 }
 
 int Scheduler::ProcessWaitingChecker() {
 	//call this function to check if there are processes waiting to be added to processQueue
 	std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
-	std::lock_guard<std::mutex> lock(processQueueMutex);
+	std::lock_guard<std::shared_mutex> lock(processQueueMutex);
 	for (int i = 0; i < processListCopy->size(); i++) 
 	{
 		//create copy of process at i
@@ -35,7 +35,7 @@ void Scheduler::ProcessQueuer() {
 	if (processListCopy->size() == 0) return;
 	if (processCounter < processListCopy->size())
 	{
-		std::lock_guard<std::mutex> lock(processQueueMutex);
+		std::lock_guard<std::shared_mutex> lock(processQueueMutex);
 		processQueue.push(processListCopy->at(processCounter));
 		processListCopy->at(processCounter)->setState(Process::READY);
 		processCounter++;
@@ -46,7 +46,7 @@ void Scheduler::ProcessQueuer() {
 	int indexOfProcessWaiting = ProcessWaitingChecker();
 	if (indexOfProcessWaiting != -1) {
 		std::unique_lock<std::shared_mutex> lockglobal(ConsoleManager::processListMutex);
-		std::lock_guard<std::mutex> lock(processQueueMutex);
+		std::lock_guard<std::shared_mutex> lock(processQueueMutex);
 		processQueue.push(processListCopy->at(indexOfProcessWaiting));
 		processListCopy->at(indexOfProcessWaiting)->setState(Process::READY);
 	}
@@ -54,7 +54,7 @@ void Scheduler::ProcessQueuer() {
 
 void Scheduler::ProcessGiver() {
 	if (running) {
-		std::lock_guard<std::mutex> lock(processQueueMutex);
+		std::lock_guard<std::shared_mutex> lock(processQueueMutex);
 		//create a shared_ptr of Process to be used by CPUSerf
 
 		//check if processQueue is empty
@@ -73,4 +73,9 @@ void Scheduler::ProcessGiver() {
 		}
 		return;
 	}
+}
+
+//function to return the readyqueue copy
+std::queue<std::shared_ptr<Process>> Scheduler::giveProcessQueue() {
+	return this->processQueue;
 }

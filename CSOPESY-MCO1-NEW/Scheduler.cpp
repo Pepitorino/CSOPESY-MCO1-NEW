@@ -5,6 +5,8 @@
 
 Scheduler* Scheduler::SCHEDULER_FOR_THE_STREETS = nullptr;
 
+std::shared_mutex Scheduler::processQueueMutex;
+
 Scheduler* Scheduler::getInstance()
 {
 	return SCHEDULER_FOR_THE_STREETS;

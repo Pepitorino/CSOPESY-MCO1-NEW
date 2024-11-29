@@ -1,5 +1,6 @@
 #pragma once
 #include "TypeDefRepo.h"
+#include "Process.h"
 
 class MemoryAllocator
 {
@@ -38,6 +39,7 @@ private:
 	bool doesFolderExist(String folderName);
 	void createFolder(String folderName);
 	void removeFolder(String folderName);
+    bool isProcessinProcessQueue(int pid, std::queue<std::shared_ptr<Process>> processQueue);
 
     void occupiedMemorySort();
     MemoryAllocator& operator=(MemoryAllocator const&) {}; //assignment operator is private
