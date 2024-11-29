@@ -23,6 +23,13 @@ public:
     std::vector<String> processSmi();
     std::vector<String> vmstat();
 
+    //BackingStore
+    void addToBackingStore(int pid, std::vector<int> frames);
+    void addToBackingStore(int pid);
+    void removeFromBackingStore(int pid);
+    bool inBackingStore(int pid);
+    void printBackingStore();
+
     static std::shared_mutex memoryMutex;
 private:
     MemoryAllocator();
@@ -58,5 +65,8 @@ private:
     size_t numFreeFrames;
     std::unordered_map<int, std::vector<int>> pidFrames; //pid, [frames taken]
     std::vector<int> processes; //pids
+
+    //Backing Store
+    std::unordered_map<int, std::tuple<String,size_t,int,int,int>> backingStore; //pid, process_name, memory, pages used, commands done, commands left
 };
 
